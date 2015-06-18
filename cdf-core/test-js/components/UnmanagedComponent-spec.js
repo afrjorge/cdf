@@ -81,7 +81,7 @@ define(["cdf/Dashboard.Clean",
       executeAtStart: true,
       myFunction: function() {}
     });
-  
+
     var uhello = new HelloUnmanagedComponent({
       name: "uhello",
       type: "HelloUnmanaged",
@@ -89,7 +89,7 @@ define(["cdf/Dashboard.Clean",
       executeAtStart: true,
       myFunction: function() {}
     });
-  
+
     var mquery = new HelloQueryBaseComponent({
       name: "mquery",
       type: "HelloQueryBase",
@@ -100,7 +100,7 @@ define(["cdf/Dashboard.Clean",
         dataAccessId: "1"
       }
     });
-  
+
     var uquery = new HelloQueryUnmanagedComponent({
       name: "uquery",
       type: "HelloQueryUnmanaged",
