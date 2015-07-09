@@ -8,6 +8,8 @@
       <static-path url="/pentaho-cdf/css" localFolder="css"/>
       <static-path url="/pentaho-cdf/resources" localFolder="resources"/>
       <static-path url="/pentaho-cdf/tmp" localFolder="tmp"/>
+      <!-- AMD version (5.4+) -->
+      <static-path url="/pentaho-cdf/js-modules" localFolder="js-modules"/>
     </static-paths>
     <content-type type="xcdf" mime-type="text/html">
       <title>Dashboard</title>
@@ -17,9 +19,12 @@
   </content-types>
   <content-generator id="pentaho-cdf" type="xcdf" title="CDF Display Handler" class="org.pentaho.cdf.CdfContentGenerator"/>
   <external-resources>
+    <!-- [BISERVER-12645] use the same file as in previous versions, for backwards compatibility -->
     <file context="requirejs">content/pentaho-cdf/js/cdf-require-js-cfg.js</file>
-    <file context="requirejs">content/pentaho-cdf/js/lib/cdf-lib-require-js-cfg.js</file>
-    <!-- cdf legacy -->
-    <file context="requirejs">content/pentaho-cdf/js-legacy/cdf-require-js-cfg.js</file>
+    <!-- the following file is the same as the one above, duplicated at build-time, we only need to include it once -->
+    <!-- file context="requirejs">content/pentaho-cdf/js-legacy/cdf-require-js-cfg.js</file -->
+    <!-- AMD version -->
+    <file context="requirejs">content/pentaho-cdf/js-modules/cdf-require-js-cfg.js</file>
+    <file context="requirejs">content/pentaho-cdf/js-modules/lib/cdf-lib-require-js-cfg.js</file>
   </external-resources>
 </plugin>

@@ -42,19 +42,19 @@
 
   var prefix = "";
   if(typeof KARMA_RUN !== "undefined") { // unit tests
-    prefix = requirePaths['cdf/lib'] = 'bin/test-js/cdf/js/lib';
+    prefix = requirePaths['cdf/lib'] = 'bin/test-js/cdf/js-modules/lib';
   } else if(typeof CONTEXT_PATH !== "undefined") { // production
 
     if(!isDebug) { requireCfg.urlArgs = "ts=" + (new Date()).getTime(); }
 
-    prefix = requirePaths['cdf/lib'] = CONTEXT_PATH + 'plugin/pentaho-cdf/api/resources/js' + (isDebug ? '/lib' : '/compressed/lib');
+    prefix = requirePaths['cdf/lib'] = CONTEXT_PATH + 'plugin/pentaho-cdf/api/resources/js-modules' + (isDebug ? '/lib' : '/compressed/lib');
   } else if(typeof FULL_QUALIFIED_URL != "undefined") { // embedded
 
     if(!isDebug) { requireCfg.urlArgs = "ts=" + (new Date()).getTime(); }
 
-    prefix = requirePaths['cdf/lib'] = FULL_QUALIFIED_URL + 'plugin/pentaho-cdf/api/resources/js' + (isDebug ? '/lib' : '/compressed/lib');
+    prefix = requirePaths['cdf/lib'] = FULL_QUALIFIED_URL + 'plugin/pentaho-cdf/api/resources/js-modules' + (isDebug ? '/lib' : '/compressed/lib');
   } else { // build
-    prefix = requirePaths['cdf/lib'] = "cdf/js/lib";
+    prefix = requirePaths['cdf/lib'] = "cdf/js-modules/lib";
   }
 
   requireConfig['cdf/lib/require-text/text'] = {

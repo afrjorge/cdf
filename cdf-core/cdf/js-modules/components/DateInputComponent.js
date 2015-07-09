@@ -11,7 +11,7 @@
  * the license for the specific language governing your rights and limitations.
  */
 
-define(['../lib/jquery', './BaseComponent',  'css!./DateInputComponent'], function($, BaseComponent) {
+define(['../lib/jquery', './BaseComponent'], function($, BaseComponent) {
 
   var DateInputComponent = BaseComponent.extend({
     update: function() {

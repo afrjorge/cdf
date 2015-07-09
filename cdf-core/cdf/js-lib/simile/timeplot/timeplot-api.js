@@ -137,7 +137,7 @@
             }
         }
 
-        var timeplotURLPrefix = (local) ? "/pentaho/api/repos/pentaho-cdf/js/lib/simile/timeplot/" : Timeplot.urlPrefix;
+        var timeplotURLPrefix = (local) ? "/pentaho/api/repos/pentaho-cdf/js-modules/lib/simile/timeplot/" : Timeplot.urlPrefix;
 
         if (debug && local && !("console" in window)) {
             var firebug = [ timeplotURLPrefix + "lib/firebug/firebug.js" ];
@@ -185,7 +185,7 @@
         if (typeof Timeline != "undefined") {
             loadTimeplot();
         } else {
-            var timelineURL = (local) ? "/pentaho/api/repos/pentaho-cdf/js/lib/simile/timeline/timeline-api.js?bundle=true" : "http://static.simile.mit.edu/timeline/api-2.0/timeline-api.js?bundle=true";
+            var timelineURL = (local) ? "/pentaho/api/repos/pentaho-cdf/js-modules/lib/simile/timeline/timeline-api.js?bundle=true" : "http://static.simile.mit.edu/timeline/api-2.0/timeline-api.js?bundle=true";
             window.SimileAjax_onLoad = loadTimeplot;
             SimileAjax.includeJavascriptFile(document, timelineURL);
         }
@@ -194,7 +194,7 @@
     // Load SimileAjax if it's not already loaded
     if (typeof SimileAjax == "undefined") {
         window.SimileAjax_onLoad = loadTimeline;
-        var url = local ? "/pentaho/api/repos/pentaho-cdf/js/lib/simile/ajax/simile-ajax-api.js?bundle=true" : "http://static.simile.mit.edu/ajax/api-2.0/simile-ajax-api.js?bundle=true";
+        var url = local ? "/pentaho/api/repos/pentaho-cdf/js-modules/lib/simile/ajax/simile-ajax-api.js?bundle=true" : "http://static.simile.mit.edu/ajax/api-2.0/simile-ajax-api.js?bundle=true";
         var createScriptElement = function() {
             var script = document.createElement("script");
             script.type = "text/javascript";

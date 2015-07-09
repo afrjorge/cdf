@@ -34,7 +34,7 @@
   <property name="js.karma.ci.config.legacy" value="config/karma.ci.conf.legacy.js"/>
   <property name="bin.test-js.dir" value="${bin.dir}/test-js" description='Karma tests js source dir' />
   <property name="bin.test-js.cdf.dir" value="${bin.test-js.dir}/cdf" description='CDF for Karma tests' />
-  <property name='bin.test-js.cdf.js.dir' value='${bin.test-js.cdf.dir}/js' description='CDF Modules for Karma tests' />
+  <property name='bin.test-js.cdf.js.dir' value='${bin.test-js.cdf.dir}/js-modules' description='CDF Modules for Karma tests' />
   <property name='bin.test-js.cdf.js.lib.dir' value='${bin.test-js.cdf.js.dir}/lib' description='CDF libs for Karma tests' />
 
   <property name="plugin.name" value="pentaho-cdf" description="Name of the plugin"/>
@@ -167,7 +167,7 @@
         <if>
           <isset property="isWindows"/>
           <then>
-            <exec executable="${js.node.node_modules.bin.dir}\karma.cmd">
+            <exec executable="${js.node.node_modules.bin.dir}\karma.cmd" failonerror="yes">
               <arg value="start"/>
               <arg value="${js.karma.ci.config}"/>
               <!-- if we are running via ant, then assume we must 'single-run' -->
@@ -175,7 +175,7 @@
             </exec>
           </then>
           <else>
-            <exec executable="karma">
+            <exec executable="karma" failonerror="true">
               <arg value="start"/>
               <arg value="${js.karma.ci.config}"/>
               <!-- if we are running via ant, then assume we must 'single-run' -->
@@ -192,10 +192,10 @@
 
   <target name="test-js-require" depends="subfloor-js.resolve-js, subfloor-js.npm-install, subfloor-js.extract-source-and-build-require-js-profile">
 
-    <!-- create test js resources dir 'bin/test-js-res/cdf/js' -->
+    <!-- create test js resources dir 'bin/test-js-res/cdf/js-modules' -->
     <delete dir="${bin.test-js.cdf.js.dir}"/>
     <mkdir dir="${bin.test-js.cdf.js.dir}"/>
-    <!-- copy amd modules into bin/test-js/cdf/js -->
+    <!-- copy amd modules into bin/test-js/cdf/js-modules -->
     <copy todir="${bin.test-js.cdf.js.dir}" overwrite="true">
       <!-- copy CDF core js amd modules -->
       <fileset dir="${js-modules.dir}">
@@ -207,17 +207,17 @@
       </fileset>
     </copy>
     
-    <!-- create test js resources dir 'bin/test-js/cdf/js/lib' -->
+    <!-- create test js resources dir 'bin/test-js/cdf/js-modules/lib' -->
     <delete dir="${bin.test-js.cdf.js.lib.dir}"/> 
     <mkdir dir="${bin.test-js.cdf.js.lib.dir}"/>
-    <!-- copy CDF js libs into bin/test-js/cdf/js/lib -->
+    <!-- copy CDF js libs into bin/test-js/cdf/js-modules/lib -->
     <copy todir="${bin.test-js.cdf.js.lib.dir}" overwrite="true">
       <fileset dir="${js-lib.dir}">
         <exclude name="**/*-require-js-cfg.js"/>
       </fileset>
     </copy>
 
-    <!-- copy CCC into bin/test-js/cdf/js/lib/CCC -->
+    <!-- copy CCC into bin/test-js/cdf/js-modules/lib/CCC -->
     <copy todir="${bin.test-js.cdf.js.lib.dir}/CCC" overwrite="true">
       <fileset dir="${js.module.script.agg.dir}/ccc/amd"/>
     </copy>

@@ -22,19 +22,19 @@
 
   var prefix;
   if(typeof KARMA_RUN !== "undefined") { // unit tests
-    prefix = requirePaths['cdf'] = 'bin/test-js/cdf/js';
+    prefix = requirePaths['cdf'] = 'bin/test-js/cdf/js-modules';
   } else if(typeof CONTEXT_PATH !== "undefined") { // production
 
     if(!isDebug) { requireCfg.urlArgs = "ts=" + (new Date()).getTime(); }
 
-    prefix = requirePaths['cdf'] = CONTEXT_PATH + 'plugin/pentaho-cdf/api/resources/js' + (isDebug ? '' : '/compressed');
+    prefix = requirePaths['cdf'] = CONTEXT_PATH + 'plugin/pentaho-cdf/api/resources/js-modules' + (isDebug ? '' : '/compressed');
   } else if(typeof FULL_QUALIFIED_URL != "undefined") { // embedded
 
     if(!isDebug) { requireCfg.urlArgs = "ts=" + (new Date()).getTime(); }
 
-    prefix = requirePaths['cdf'] = FULL_QUALIFIED_URL + 'plugin/pentaho-cdf/api/resources/js' + (isDebug ? '' : '/compressed');
+    prefix = requirePaths['cdf'] = FULL_QUALIFIED_URL + 'plugin/pentaho-cdf/api/resources/js-modules' + (isDebug ? '' : '/compressed');
   } else { // build
-    prefix = requirePaths['cdf'] = "cdf/js";
+    prefix = requirePaths['cdf'] = "cdf/js-modules";
   }
 
   /*

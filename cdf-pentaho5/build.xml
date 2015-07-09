@@ -26,7 +26,7 @@ de
   <property name="js.karma.ci.config.legacy" value="config/karma.ci.conf.legacy.js" />
   <property name="bin.test-js.dir" value="${bin.dir}/test-js" description='Karma tests js source dir' />
   <property name="bin.test-js.cdf.dir" value="${bin.test-js.dir}/cdf" description='CDF for Karma tests' />
-  <property name='bin.test-js.cdf.js.dir' value='${bin.test-js.cdf.dir}/js' description='CDF Modules for Karma tests' />
+  <property name='bin.test-js.cdf.js.dir' value='${bin.test-js.cdf.dir}/js-modules' description='CDF Modules for Karma tests' />
   <property name='bin.test-js.cdf.js.lib.dir' value='${bin.test-js.cdf.js.dir}/lib' description='CDF libs for Karma tests' />
   <property name='test-js.dir' value='${pentaho.dir}/test-js' description='Karma tests dir' />
 
@@ -104,7 +104,7 @@ de
   <property name='resources.path' value='${resource.dir}/${resources.properties.name}'/>
 
   <property name="js.module.script.namespace" value="cdf"/>
-  <property name="js.module.script.dir" value="cdf/js"/>
+  <property name="js.module.script.dir" value="cdf/js-modules"/>
 
   <property name="build.js.path" value="config/cdf.build.compile.js" description="cdf.build.compile.js location"/>
 
@@ -224,13 +224,19 @@ de
   <target name="dist-plugin" depends="make-stage,dist-js" description="Creates a distribution">
 
     <!-- handle js -->
-    <copy todir="${stage.dir}/${plugin.name}/js/" overwrite="true">
-      <fileset dir="bin/js-source/cdf/js"/>
+    <copy todir="${stage.dir}/${plugin.name}/js-modules/" overwrite="true">
+      <fileset dir="bin/js-source/cdf/js-modules"/>
     </copy>
 
     <!-- handle legacy js -->
     <copy todir="${stage.dir}/${plugin.name}/js-legacy" overwrite="true">
       <fileset dir="bin/js-source/cdf/js-legacy/"/>
+    </copy>
+    <!-- CDF legacy [BISERVER-12645] for backwards compatibility (plugin.xml) -->
+    <copy todir="${stage.dir}/${plugin.name}/js" overwrite="true">
+      <fileset dir="bin/js-source/cdf/js/">
+        <include name="cdf-require-js-cfg.js" />
+      </fileset>
     </copy>
 
     <!-- handle extra resources -->
@@ -348,7 +354,7 @@ de
 
     <!-- copy js to temp location for compilation -->
     <echo message="Copying js source"/>
-    <copy todir='${js.module.script.agg.dir}/cdf/js'>
+    <copy todir='${js.module.script.agg.dir}/cdf/js-modules'>
       <fileset dir='${core-js.dir}'>
         <exclude name="*-require-js-cfg.js" />
       </fileset>
@@ -362,7 +368,7 @@ de
     </copy>
 
     <!-- Create an aggregated "cdf-require-js-cfg.js" file -->
-    <concat destfile="${js.module.script.agg.dir}/cdf/js/cdf-require-js-cfg.js" force="yes">
+    <concat destfile="${js.module.script.agg.dir}/cdf/js-modules/cdf-require-js-cfg.js" force="yes">
       <fileset dir='${core-js.dir}'>
         <include name="*-require-js-cfg.js" />
       </fileset>
@@ -374,14 +380,14 @@ de
       </fileset>
     </concat>
 
-    <copy todir='${js.module.script.agg.dir}/cdf/js/lib'>
+    <copy todir='${js.module.script.agg.dir}/cdf/js-modules/lib'>
       <fileset dir='${core-js-lib.dir}'>
         <exclude name="*-require-js-cfg.js" />
       </fileset>
     </copy>
 
     <!-- Create an aggregated "cdf-lib-require-js-cfg.js" file -->
-    <concat destfile="${js.module.script.agg.dir}/cdf/js/lib/cdf-lib-require-js-cfg.js"
+    <concat destfile="${js.module.script.agg.dir}/cdf/js-modules/lib/cdf-lib-require-js-cfg.js"
             force="yes">
       <fileset dir='${core-js-lib.dir}'>
         <include name="*-require-js-cfg.js" />
@@ -419,7 +425,7 @@ de
     </unzip>
 
     <!-- copy CCC to be included during minification -->
-    <copy todir="${js.module.script.agg.dir}/cdf/js/lib/CCC">
+    <copy todir="${js.module.script.agg.dir}/cdf/js-modules/lib/CCC">
       <fileset dir="${js.expanded.lib.dir}/ccc/amd"/>
     </copy>
 
@@ -431,22 +437,22 @@ de
       <arg value="${build.js.path}"/>
     </exec>
 
-    <copy todir="${bin.dir}/js-source/cdf/js">
-      <fileset dir="${js.module.script.agg.dir}/cdf/js"/>
+    <copy todir="${bin.dir}/js-source/cdf/js-modules">
+      <fileset dir="${js.module.script.agg.dir}/cdf/js-modules"/>
     </copy>
 
-    <copy todir="${bin.dir}/js-source/cdf/js/compressed">
-      <fileset dir="${js.build.output.dir}/cdf/js">
+    <copy todir="${bin.dir}/js-source/cdf/js-modules/compressed">
+      <fileset dir="${js.build.output.dir}/cdf/js-modules">
         <exclude name="**/*-require-js-cfg.js"/>
       </fileset>
     </copy>
 
     <!-- copy require cfg files to subfloor default lookup folder -->
     <copy todir="${bin.dir}/js-source/cdf/" overwrite="true">
-      <fileset dir="${js.module.script.agg.dir}/cdf/js">
+      <fileset dir="${js.module.script.agg.dir}/cdf/js-modules">
         <include name="*-require-js-cfg.js"/>
       </fileset>
-      <fileset dir="${js.module.script.agg.dir}/cdf/js/lib">
+      <fileset dir="${js.module.script.agg.dir}/cdf/js-modules/lib">
         <include name="*-require-js-cfg.js"/>
       </fileset>
     </copy>
@@ -524,6 +530,13 @@ de
     <copy tofile="${bin.dir}/js-source/cdf/cdf-legacy-require-js-cfg.js" overwrite="true">
       <fileset dir="${pentaho-js-legacy.dir}">
         <include name="cdf-require-js-cfg.js"/>
+      </fileset>
+    </copy>
+
+    <!-- CDF legacy [BISERVER-12645] for backwards compatibility (plugin.xml) -->
+    <copy todir="${bin.dir}/js-source/cdf/js" overwrite="true">
+      <fileset dir="${pentaho-js-legacy.dir}">
+        <include name="cdf-require-js-cfg.js" />
       </fileset>
     </copy>
   </target>
@@ -700,7 +713,7 @@ de
                 <fail>Karma is not available, make sure Node.js is installed. Unit tests could not run.</fail>
               </then>
             </if>
-            <exec executable="${js.node.node_modules.bin.dir}\karma.cmd">
+            <exec executable="${js.node.node_modules.bin.dir}\karma.cmd" failonerror="true">
               <arg value="start"/>
               <arg value="${js.karma.ci.config}"/>
               <!-- if we are running via ant, then assume we must 'single-run' -->
@@ -717,7 +730,7 @@ de
                 <fail>Make sure Node.js is installed and run 'npm install -g karma-cli' [adds karma to the command line]</fail>
               </then>
             </if>
-            <exec executable="karma">
+            <exec executable="karma" failonerror="true">
               <arg value="start"/>
               <arg value="${js.karma.ci.config}"/>
               <!-- if we are running via ant, then assume we must 'single-run' -->

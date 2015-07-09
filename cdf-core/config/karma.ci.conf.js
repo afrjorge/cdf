@@ -22,22 +22,22 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      {pattern: 'bin/test-js/cdf/js/**/*.css', included: false},
-      {pattern: 'bin/test-js/cdf/js/**/*.js', included: false},
+      {pattern: 'bin/test-js/cdf/js-modules/**/*.css', included: false},
+      {pattern: 'bin/test-js/cdf/js-modules/**/*.js', included: false},
       'config/context.js',
       {pattern: 'test-js/**/*.ext.js', included: true},
       {pattern: 'test-js/**/*-spec.js', included: false},
       'build-res/requireCfg-raw.js',
       'config/require-config.js',
       // fix 404 messages
-      {pattern: 'bin/test-js/cdf/js/**/*.png', watched: false, included: false, served: true},
-      {pattern: 'bin/test-js/cdf/js/**/*.gif', watched: false, included: false, served: true}
+      {pattern: 'bin/test-js/cdf/js-modules/**/*.png', watched: false, included: false, served: true},
+      {pattern: 'bin/test-js/cdf/js-modules/**/*.gif', watched: false, included: false, served: true}
     ],
 
     // list of files to exclude
     exclude: ['test-js/legacy/**/*.js'],
 
-    preprocessors: {'bin/test-js/cdf/js/**/*.js': 'coverage'},
+    preprocessors: {'bin/test-js/cdf/js-modules/**/*.js': 'coverage'},
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
