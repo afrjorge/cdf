@@ -140,7 +140,7 @@ define([
       expect(filterComponent.getConfiguration().component.Item.options.showButtonOnlyThis).toEqual(false);
     });
 
-    describe("Manager controller #", function() {
+    ddescribe("Manager controller #", function() {
       it("sorts children according to an array of custom sorting functions", function(done) {
         dashboard.addDataSource("selectionDataSource", {
           dataAccessId: "testId",
@@ -161,14 +161,13 @@ define([
         });
         dashboard.addComponent(filterComponent);
 
-        filterComponent.setAddInOptions('sortItem', 'sortByValue', {ascending: true});
-        filterComponent.setAddInOptions('sortItem', 'sortByLabel', {ascending: true});
-
         spyOn($, 'ajax').and.callFake(function(params) {
           params.success(getCdaJson(
             [["One", "label1", null, null, 60],
-             ["Two", "label2", null, null, 7],
-             ["Three", "label1", null, null, 7]],
+             ["Three", "label3", null, null, 7],
+             ["Two", "label2", null, null, 60],
+             ["Four", "label1", null, null, 7],
+             ["Five", "label4", null, null, 7]],
             [{colIndex: 0, colType: "String", colName: "id"},
              {colIndex: 1, colType: "String", colName: "name"},
              {colIndex: 4, colType: "Numeric", colName: "value"}]));
@@ -177,19 +176,72 @@ define([
         filterComponent.once("getData:success", function() {
           spyOn(filterComponent.manager, "renderSortedChildren").and.callFake(function() {
             var orderedChildren = this._detachChildren();
+            //random order
             expect(orderedChildren[0].item.get('model').get('value')).toEqual(60);
             expect(orderedChildren[0].item.get('model').get('label')).toEqual("label1");
             expect(orderedChildren[1].item.get('model').get('value')).toEqual(7);
-            expect(orderedChildren[1].item.get('model').get('label')).toEqual("label2");
-            expect(orderedChildren[2].item.get('model').get('value')).toEqual(7);
-            expect(orderedChildren[2].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[1].item.get('model').get('label')).toEqual("label3");
+            expect(orderedChildren[2].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[2].item.get('model').get('label')).toEqual("label2");
+            expect(orderedChildren[3].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[3].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[4].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[4].item.get('model').get('label')).toEqual("label4");
+            //ascending order
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByValue', {ascending: true});
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByLabel', {ascending: true});
             orderedChildren = this.sortChildren(orderedChildren);
             expect(orderedChildren[0].item.get('model').get('value')).toEqual(7);
             expect(orderedChildren[0].item.get('model').get('label')).toEqual("label1");
             expect(orderedChildren[1].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[1].item.get('model').get('label')).toEqual("label3");
+            expect(orderedChildren[2].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[2].item.get('model').get('label')).toEqual("label4");
+            expect(orderedChildren[3].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[3].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[4].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[4].item.get('model').get('label')).toEqual("label2");
+            //descending order
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByValue', {ascending: false});
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByLabel', {ascending: false});
+            orderedChildren = this.sortChildren(orderedChildren);
+            expect(orderedChildren[0].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[0].item.get('model').get('label')).toEqual("label2");
+            expect(orderedChildren[1].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[1].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[2].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[2].item.get('model').get('label')).toEqual("label4");
+            expect(orderedChildren[3].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[3].item.get('model').get('label')).toEqual("label3");
+            expect(orderedChildren[4].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[4].item.get('model').get('label')).toEqual("label1");
+            //mixed order
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByValue', {ascending: false});
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByLabel', {ascending: true});
+            orderedChildren = this.sortChildren(orderedChildren);
+            expect(orderedChildren[0].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[0].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[1].item.get('model').get('value')).toEqual(60);
             expect(orderedChildren[1].item.get('model').get('label')).toEqual("label2");
-            expect(orderedChildren[2].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[2].item.get('model').get('value')).toEqual(7);
             expect(orderedChildren[2].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[3].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[3].item.get('model').get('label')).toEqual("label3");
+            expect(orderedChildren[4].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[4].item.get('model').get('label')).toEqual("label4");
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByValue', {ascending: true});
+            dashboard.setAddInDefaults('Filter', 'sortItem', 'sortByLabel', {ascending: false});
+            orderedChildren = this.sortChildren(orderedChildren);
+            expect(orderedChildren[0].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[0].item.get('model').get('label')).toEqual("label4");
+            expect(orderedChildren[1].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[1].item.get('model').get('label')).toEqual("label3");
+            expect(orderedChildren[2].item.get('model').get('value')).toEqual(7);
+            expect(orderedChildren[2].item.get('model').get('label')).toEqual("label1");
+            expect(orderedChildren[3].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[3].item.get('model').get('label')).toEqual("label2");
+            expect(orderedChildren[4].item.get('model').get('value')).toEqual(60);
+            expect(orderedChildren[4].item.get('model').get('label')).toEqual("label1");
             done();
           });
         });

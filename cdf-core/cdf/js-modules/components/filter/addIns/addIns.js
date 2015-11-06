@@ -133,13 +133,7 @@ define([
               ascending: false
             },
             implementation: function($tgt, st, options) {
-              var result;
-              result = st.model.get('value');
-              if (options.ascending) {
-                return result;
-              } else {
-                return -1 * result;
-              }
+              return st.model.get('value');
             }
           });
           Dashboards.registerGlobalAddIn('FilterComponent', 'sortItem', myAddIn);

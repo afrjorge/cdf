@@ -320,27 +320,15 @@ define([
           var addInHash, addInList, configuration, getOrCreateEntry, that;
           that = this;
           addInList = _.chain(this.addIns).map(function(list, slot) {
-            var addIns;
-            addIns = _.chain(list).map(function(name) {
-              var addIn, addInName, addInOptions;
-              addInName = name.trim();
-              addIn = that.getAddIn(slot, addInName);
+            return [slot, _.chain(list).map(function(name) {
+              var addInName = name.trim(),
+                  addIn = that.getAddIn(slot, addInName);
               if (addIn != null) {
-                addInOptions = that.getAddInOptions(slot, addInName);
-                return function($tgt, model, options) {
-                  var st;
-                  st = {
-                    model: model,
-                    configuration: options,
-                    dashboard: that.dashboard
-                  };
-                  return addIn.call($tgt, st, addInOptions);
-                };
+                return [addIn, that.dashboard, that.getAddInOptions(slot, addInName)];
               } else {
                 return null;
               }
-            }).compact().value();
-            return [slot, addIns];
+            }).compact().value()];
           }).object().value();
 
           /*

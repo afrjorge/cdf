@@ -324,9 +324,23 @@ define([
 
       // apply sorters in reverse order, from least to most important sorter
       while(sorterIdx--) {
+        var addIn = customSorters[sorterIdx][0],
+            addInOptions = _.extend({}, customSorters[sorterIdx][2], addIn.getOptions());
         orderedChildren = orderedChildren.sortBy(function(child, idx) {
-          return customSorters[sorterIdx](null, child.item.get('model'), configuration);
+          return addIn.call(
+            null,
+            {
+              model: child.item.get('model'),
+              configuration: configuration,
+              dashboard: customSorters[sorterIdx][1]
+            },
+            addInOptions
+          );
         });
+        //if(sorterIdx == 0 && addInOptions && addInOptions.ascending === false) {
+        if(addInOptions && addInOptions.ascending === false) {
+          orderedChildren = orderedChildren.reverse();
+        }
       }
       return orderedChildren.value();
     },

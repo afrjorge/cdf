@@ -114,11 +114,8 @@ define([
       if(!_implementation) {
         return Utils.clone(_value);
       }
-      options = typeof options === "function" ? options(state) : options;
-      var evaluatedDefaults = typeof _defaults === "function" ? _defaults(state) : _defaults;
-      var compiledOptions = $.extend(true, {}, evaluatedDefaults, options);
       try{
-        return _implementation.call(myself, target, state, compiledOptions);
+        return _implementation.call(myself, target, state, this.getOptions(state, options));
       } catch(e) {
         Logger.log("Addin Error [" + this.getName() + "]: " + e, "error");
       }
@@ -130,6 +127,12 @@ define([
       } else {
         _defaults = $.extend(true, {}, _defaults, defaults);
       }
+    };
+
+    this.getOptions = function(state, options) {
+      return $.extend(true, {}, 
+        typeof _defaults === "function" ? _defaults(state) : _defaults,
+        typeof options === "function" ? options(state) : options);
     };
   };
 });

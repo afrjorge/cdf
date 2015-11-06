@@ -148,6 +148,21 @@ define([
     },
 
     /**
+     * Gets the options for a given addin.
+     *
+     * @method getAddInOptions
+     * @for Dashboard
+     * @param {String} type The type of the add-in, usually the component type where this addIn will be available
+     * @param {String} subType The subtype of the addIn
+     * @param {String} addInName The addIn name
+     * @return {Object} The addin options. This is a JSON object specifying the options. The options
+     * are dependent on which addIn is being used.
+     */
+    getAddInOptions: function(type, subType, addInName) {
+      return this.getAddIn(type, subType, addInName).getOptions() || {};
+    },
+
+    /**
      * Lists registered addIns for a given type and subtype.
      *
      * @method listAddIns
