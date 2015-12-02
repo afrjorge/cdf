@@ -476,7 +476,7 @@ body {
 }
 
 .calendar-block table {
-  width: 100%;
+  width: 98%;
   table-layout: fixed;
 }
 
@@ -669,4 +669,12 @@ body {
   color: #FFF;
   border-color: #005CA7;
   cursor: default;
+}
+
+div.calendar-container {
+  overflow: auto;
+}
+
+div.calendar-container.mCustomScrollbar {
+  max-height: 250px;
 }

@@ -1189,7 +1189,7 @@ window.wd.dateRangeSelectorModules.CalendarDialogView = ( function (
       this.listenTo( this.getChild( 'calendar' ) , 'change' , _.bind( selectDate , this ) );
     }
     this.getChild( 'calendar' )
-      .mount( $(target).find('.calendar-container') )
+      .mount( $(target).find('.calendar-container').mCustomScrollbar() )
       .update({
         date: viewModel['date'],
         precision: viewModel['precision'],
