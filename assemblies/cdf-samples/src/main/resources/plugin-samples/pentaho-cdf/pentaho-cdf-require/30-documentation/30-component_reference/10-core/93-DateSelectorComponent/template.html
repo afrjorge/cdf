@@ -1,0 +1,365 @@
+<script type="text/javascript" src="../../repo/files/%3Apublic%3Aplugin-samples%3Apentaho-cdf%3Apentaho-cdf-require%3A30-documentation%3A30-component_reference%3Asamples.js"></script>
+<style>
+  div#sampleObject {
+    width: 400px;
+  }
+  .date-range-selector-block.date-range-selector-dropdown *, .calendar-dialog {
+    position: relative;
+  }
+  div.calendar-container.mCustomScrollbar {
+    max-height: 265px;
+  }
+</style>
+<h1>Date Selector Component Reference</h1>
+
+<h2> Introduction </h2>
+<p>
+  The date selector allows the user to pick a date from a calendar. The date parameter usually corresponds to a day, unless the parsing and formating options state otherwise. The day will correspond to the start (or end) of the period defined by the precisions of the selector.
+</p>
+
+<h2>Date Selector Options</h2>
+<dl>
+  <dt>date <code>{String}</code></dt>
+  <dd>
+    <p>
+      Define the name of the dashboard parameter that should be used to bind to the date. The selector will still maintain an internal state for a given date parameter, even when the corresponding dashboard parameter is not specified by the user.
+    </p>
+    <p>
+      Example:
+    </p>
+    <pre>
+      {
+        dat: 'dateParam'
+      }
+    </pre>
+    <p>The component will always call:</p>
+    <pre>
+      component.dashboard.fireChange( dateParameterName , parameterValue )
+    </pre>
+  </dd>
+
+  <dt>foldDirection <code>{'left' | 'right' | 'bottom'}</code></dt>
+  <dd>
+    <p>Controls the direction where the selector calendar should appear. All values that are not either *'left'* or *'right'* are considered to be *'bottom'*.
+
+    By default, the selector will determine the amount of available space, assuming that the popup will have the same width as the main component container itself. The priority order in the fold direction is as follows:
+
+    left > right > bottom
+    </p>
+  </dd>
+
+  <dt>precision <code>{String}</code></dt>
+  <dd>
+    default: <code>'day'</code>
+    <p>
+      Controls the precision of the calendar, affecting the kinds of periods that can be chosen by the calendar, the format of the main display and limiting the date parameter (which always corresponds to a day) to the beggining or end of the precision period.
+    </p>
+  </dd>
+
+  <dt>edge <code>{'start' | 'end'}</code></dt>
+  <dd>
+    default: <code>'start'</code>
+    <p>
+      Controls if the date parameter corresponds to the start or the end of the configured precision period.
+    </p>
+    <p>
+      For example, with a selected date of *May, 2015* and a *month* precision, the date point corresponding to the date parameter will either be the first or the last day of the month.
+      The display will show:
+    </p>
+    <p>
+      edge 'start': <code>May (01, 2015)</code><br>
+      edge 'end': <code>May (31, 2015)</code>
+    </p>
+  </dd>
+
+  <dt>dateFormat <code>{Function | Object:(String | Function)}</code></dt>
+  <dd>
+    <p>
+      Controls the format of the dates shown in the selector main display. 
+    </p>
+    <p>
+      Function <code>{function(date, precision)}</code><br>
+      <dl>
+        <dt>date <code>{Moment}</code></dt><dd> the date to format.</dd>
+        <dt>precision <code>{String}</code></dt><dd> the selected precision.</dd>
+      </dl>
+      Returns a string to display on the calendar prompts, indicating the date.
+    </p>
+    <pre>
+      function formatter(date, precision) {
+        return date.format((precision === 'day') ? 'YYYY*MM*DD' : 'YYYY');
+      }
+    </pre>
+    <p>
+      Object<br>
+      The object keys correspond to precisions. The values will control the format for the corresponding precision, either using a String format or a Function format.
+    </p>
+    <p>
+      Object <code>{String}</code><br>
+      Accepts format strings as used by Moment.js.<br>
+      For example, a date equal to *2015-03-01* the following formatting string will produce:<br>
+      MMM DD, YYYY -> Mar 01, 2015
+    </p>
+    <p>
+      Object <code>{function(date)}</code><br>
+      Similar to the global formatter function but without the precision argument.
+      <dl>
+        <dt>date <code>{Moment}</code></dt><dd> the date to format.</dd>
+      </dl>
+      Returns a string to display on the calendar prompts, indicating the date.
+    </p>
+    <pre>
+      function formatter(date) {
+        return date.format('YYYY/MM/DD');
+      }
+    </pre>
+    <p>
+      The String and Function formats can be me mixed in the same configuration object, for different precisions.
+    </p>
+    <pre>
+      {
+        'day': 'MMM DD, YYYY',
+        'month': 'MMM, YYYY',
+        'year': function(date) {
+          return "It was the glorious year of " + date.format('YYYY");
+        }
+      }
+    </pre>
+    <p>
+      Default value<br>
+      The component will use the default values for a a given precision, if the formatter is not defined in the configuration option. In the case of a global function formatter (with the precision argument), the formatter will always take precedence even over the default values, since it is expected that such function is able to handle all cases.
+    </p>
+    <pre>
+      {
+        'day' : 'MMM DD, YYYY',
+        'month': 'MMM [<span class="weak">](DD, YYYY)[</span>]',
+        'week': '[Week] ww [<span class="weak">](MMM DD, YYYY)[</span>]',
+        'isoWeek': '[Week] WW [<span class="weak">](MMM DD, YYYY)[</span>]',
+        'quarter': '[Q]Q [<span class="weak">](MMM DD, YYYY)[</span>]',
+        'year': 'YYYY [<span class="weak">](MMM DD)[</span>]'
+      }
+    </pre>
+    <p>
+      Notes:<br>
+      <ul>
+        <li>
+          String formats use the Moment.js formatting syntax, and so square brackets identify escaped sub-strings.
+        </li>
+        <li>
+          Formatted values will be included in html templates rendered using Mustache, as unescaped html.
+        </li>
+      </ul>
+    </p>
+    <p>
+      Example:<br>
+      With a range format for year precision of: <code>[<strong>Year:</strong> ]YYYY</code>
+      and a date in 2015, the following string is produced: <code><strong>Year:</strong> 2015</code>
+      Which is rendered as: <code><strong>Year:</strong> 2015</code>
+    </p>
+  </dd>
+
+  <dt>calendarFormat <code>{Function | Object:(String | Function)}</code></dt>
+  <dd>
+    <p>
+      Controls the format of the dates displayed inside the calendar.
+    </p>
+    <p>
+      Function <code>{function(date, precision)}</code><br>
+      <dl>
+        <dt>date <code>{Moment}</code></dt><dd> the date to format.</dd>
+        <dt>precision <code>{String}</code></dt><dd> the selected precision.</dd>
+      </dl>
+      Returns a string to display on the calendar elements, indicating the date.
+    </p>
+    <pre>
+      function formatter(date, precision) {
+        return date.format((precision === 'day') ? 'YYYY*MM*DD' : 'YYYY');
+      }
+    </pre>
+    <p>
+      Object<br>
+      The object keys correspond to precisions. The values will control the format for the corresponding precision, either using a String format or a Function format.
+    </p>
+    <p>
+      Object <code>{String}</code><br>
+      Accepts format strings as used by Moment.js.<br>
+      For example, a date equal to *2015-03-01* the following formatting string will produce:<br>
+      MMM -> Mar<br>
+      DD -> 03<br>
+      YYYY -> 2015<br>
+    </p>
+    <p>
+      Object <code>{function(date)}</code><br>
+      Similar to the global formatter function but without the precision argument.
+      <dl>
+        <dt>date <code>{Moment}</code></dt><dd> the date to format.</dd>
+      </dl>
+      Returns a string to display on the calendar elements, indicating the date.
+    </p>
+    <pre>
+      function formatter(date) {
+        return date.format('DD');
+      }
+    </pre>
+    <p>
+      The String and Function formats can be me mixed in the same configuration object, for different precisions.
+    </p>
+    <pre>
+      {
+        'day': 'MMM DD, YYYY',
+        'month': 'MMM, YYYY',
+        'year': function(date) {
+          return "It was the glorious year of " + date.format('YYYY");
+        }
+      }
+    </pre>
+    <p>
+      Default value<br>
+      The component will use the default values for a a given precision, if the formatter is not defined in the configuration option. In the case of a global function formatter (with the precision argument), the formatter will always take precedence even over the default values, since it is expected that such function is able to handle all cases.
+    </p>
+    <pre>
+      {
+        'day' : 'DD',
+        'month': 'MMM',
+        'week': function(date) {
+          var startMonth = date.startOf('week').format('MMM'),
+            endMonth = date.endOf('week').format('MMM'),
+            model = {
+              week: date.format('[W]w'),
+              range: (startMonth == endMonth) ? startMonth : startMonth + ' - ' + endMonth
+            },
+            template = '{{week}} <span class="weak">({{range}})</span>';
+          return Mustache.render(template, model);
+        },
+        'isoWeek': function(date) {
+          var startMonth = date.startOf('isoWeek').format('MMM'),
+            endMonth = date.endOf('isoWeek').format('MMM'),
+            model = {
+              week: date.format('[W]W'),
+              range: (startMonth == endMonth) ? startMonth : startMonth + ' - ' + endMonth
+            },
+            template = '{{week}} <span class="weak">({{range}})</span>';
+          return Mustache.render(template, model);
+        },
+        'quarter': '[Q]Q',
+        'year': 'YYYY'
+      }
+    </pre>
+    <p>
+      Notes:<br>
+      <ul>
+        <li>
+          String formats use the Moment.js formatting syntax, and so square brackets identify escaped sub-strings.
+        </li>
+        <li>
+          Formatted values will be included in html templates rendered using Mustache, as unescaped html.
+        </li>
+      </ul>
+    </p>
+    <p>
+      Example:<br>
+      With a range format for year precision of: <code>[<strong>Y:</strong> ]YYYY</code>
+      and a date in 2015, the following string is produced: <code><strong>Y:</strong> 2015</code>
+      Which is rendered as: <code><strong>Y:</strong> 2015</code>
+    </p>
+  </dd>
+
+  <dt>inputFormat <code>{String | Function}</code></dt>
+  <dd>
+    <p>
+      Defines the format to be used to parse and format component date parameter between a custom format and a moment object. The parsing is also applied to max date and min date options, which are assumed to share the format of the date parameter.
+    </p>
+    <p>
+      <code>{String}</code><br>
+      String format as used by Moment.js. In this mode, the same string is used to parse and format the dates.<br>
+      For example, The following formatting strings should be used to parse (and format) the date parameter, corresponding to the same date:<br>
+      2015-03-01 -> YYYY-MM-DD<br>
+      2015/01/02 -> YYYY/DD/MM<br>
+      Mar 01, 2015 -> MMM DD, YYYY<br>
+    </p>
+    <p>
+      Function <code>{function(isFormattingCall, date)}</code><br>
+      This mode is used when the date parameter are represented by a format which is not handled by Moment.js. In this case, we typically need a parsing function and a formatting function. The component assumes that is handled by the function passed to **inputFormat** and, to differentiate between the two cases, passes another argument to the function indicating whether it is a formatting call or not.
+      <dl>
+        <dt>isFormattingCall <code>{Boolean}</code></dt>
+        <dd> <code>true</code> is the date parameter is to be formatted, <code>false</code> if it should be parsed.</dd>
+        <dt>date <code>{Moment}</code></dt>
+        <dd> date to format/parse.</dd>
+      </dl>
+    </p>
+    <p>
+      Returns the formatted/parsed date <code>{customFormat|Moment}</code> the function should return a customFormat if <b>isFormattingCall</b> is <code>true</code>, or a Moment.js object if <b>isFormattingCall</b> is <code>false</code>. Example:
+    </p>
+    <pre>
+      function dateTransformer(isFormattingCall, date) {
+        return isFormattingCall ? myFormatter(date) : myParser(date);
+      }
+      function myParser(date) { ... } //returns Moment object
+      function myFormatter(date) { ... } //returns String
+    </pre>
+    <p>
+      Default value: 'YYYY-MM-DD'
+    </p>
+  </dd>
+
+</dl>
+
+<h3>Sample</h3>
+
+<div id="example" class="flora">
+  <ul>
+    <li><a href="#sample"><span>Sample</span></a></li>
+    <li><a href="#code"><span>Code</span></a></li>
+  </ul>
+  <div id="sample">
+    <div id="sampleObject"></div>
+    <br/>
+  </div>
+
+  <div id="code">
+    <textarea cols="80" rows="40" id="samplecode">
+require([
+  'cdf/Dashboard.Blueprint',
+  'cdf/components/DateSelectorComponent',
+  'cdf/lib/moment'
+], function(Dashboard, DateSelectorComponent, moment) {
+
+  var dashboard = new Dashboard();
+
+  dashboard.addParameter("start", "2015-11-02");
+  dashboard.addParameter("end", "2015-12-02");
+  dashboard.addParameter("precision", "day");
+  dashboard.setParameterViewMode("precision", "unused");
+  dashboard.addParameter("granularity", "year");
+  dashboard.setParameterViewMode("granularity", "unused");
+
+  dashboard.addComponent(new DateSelectorComponent({
+    type: "DateSelectorComponent",
+    name: "render_dateSelector",
+    priority: 5,
+    executeAtStart: true,
+    htmlObject: "sampleObject",
+    listeners: ['start', 'end', 'precision'],
+    preExecution: function() {
+      var cd = this.componentDefinition;
+      cd.max = function() {
+        return moment().add(10,'year');
+      };
+      cd.edge = 'end';
+      cd.precision = this.dashboard.getParameterValue('precision');
+    },
+    dashboardParameterMap: {
+      date: "start"
+    },
+    componentDefinition: {
+      inputFormat: "YYYY-MM-DD"
+    }
+  }));
+
+  dashboard.init();
+});
+    </textarea>
+    <br/>
+    <button id="tryMe">Try me</button>
+  </div>
+</div>
