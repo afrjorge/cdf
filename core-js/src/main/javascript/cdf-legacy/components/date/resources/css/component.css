@@ -117,6 +117,12 @@ body {
   z-index: 100;
 }
 
+.date-range-selector-block * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 .date-range-selector-block .buttons-container {
   padding: 15px;
   background: #F2F2F2;
@@ -265,8 +271,18 @@ body {
   padding: 0;
 }
 
+tr.calendar-row.items > td {
+  padding: 0;
+}
+
 .custom-date-block {
   position: relative;
+}
+
+.custom-date-block * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .custom-date-block .date-display {
