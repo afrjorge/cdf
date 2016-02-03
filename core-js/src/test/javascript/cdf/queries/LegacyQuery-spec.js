@@ -50,5 +50,16 @@ define(["cdf/Dashboard.Clean"], function(Dashboard) {
       });
     });
 
+    describe("Legacy query # lastResultSet.reader", function() {
+
+      describe("when passing well-formed json object's string representation", function() {
+
+        it("should parse it successfully", function() {
+          var actual = legacyQuery.interfaces.lastResultSet.reader(unprocessedDataString);
+          expect(actual).toEqual(unprocessedData);
+        });
+      });
+    });
+
   });
 });
