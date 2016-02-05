@@ -14,10 +14,10 @@
 define(["cdf/Dashboard.Clean"], function(Dashboard) {
 
   // legacy queries executes eval on data strings
-  var unprocessedDataString = '{"metadata":["Sales"],"values":[["Euro+ Shopping Channel","914.11"],["Mini Gifts Ltd.","6558.02"]]}',
-      unprocessedData = {metadata: [{colIndex : 0, colType : 'String', colName : 'Name'},
-                                    {colIndex : 1, colType : 'String', colName : 'Sales'}],
-                         resultset: [['Euro+ Shopping Channel', '914.11'], ['Mini Gifts Ltd.', '6558.02']]},
+  var unprocessedDataString = "{\"metadata\":[\"Sales\"],\"values\":[[\"Euro+ Shopping Channel\",\"914.11\"],[\"Mini Gifts Ltd.\",\"6558.02\"]]}",
+      unprocessedData = {metadata: [{colIndex : 0, colType : "String", colName : "Name"},
+                                    {colIndex : 1, colType : "String", colName : "Sales"}],
+                         resultset: [["Euro+ Shopping Channel", "914.11"], ["Mini Gifts Ltd.", "6558.02"]]},
       processedData = {data: [1, 2, 3]},
       dashboard,
       legacyQuery;
