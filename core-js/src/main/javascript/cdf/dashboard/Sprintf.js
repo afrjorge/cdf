@@ -21,6 +21,7 @@ define(['./Utils'], function(utils) {
   /**
    * @class cdf.dashboard.Sprintf
    * @amd cdf/dashboard/Sprintf
+   * @staticClass
    * @classdesc Sprintf implementation for javascript.
    *            The class returns a function that can be called to format
    *            a string according to the Sprintf specs.

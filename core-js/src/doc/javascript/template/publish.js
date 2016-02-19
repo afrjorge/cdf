@@ -624,6 +624,23 @@ exports.publish = function(taffyData, opts, tutorials) {
         }
     });
 
+    data().each(function(doclet) {
+        if(!doclet.ignore) {
+            var parent = find({longname: doclet.memberof})[0];
+            if( !parent ) {
+                doclet.scopeEf = doclet.scope;
+            } else {
+                if(doclet.scope === 'static' && parent.kind !== 'class') {
+                    doclet.scopeEf = 'instance';
+                } else if(doclet.scope === 'static' && parent.static && parent.kind === 'class') {
+                    doclet.scopeEf = 'instance';
+                } else {
+                    doclet.scopeEf = doclet.scope;
+                }
+            }
+        }
+    });
+
     var members = helper.getMembers(data);
     members.tutorials = tutorials.children;
 

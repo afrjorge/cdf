@@ -22,6 +22,7 @@ define([
 
   /**
    * @class cdf.dashboard.Utils
+   * @staticClass
    * @amd cdf/dashboard/Utils
    * @classdesc A collection of utility functions.
    */

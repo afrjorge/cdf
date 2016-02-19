@@ -75,7 +75,7 @@
                 <?js }); ?></dl>
             <?js } ?>
 
-            <?js if (doc.kind === 'class') { ?>
+            <?js if (doc.kind === 'class' && !doc.static) { ?>
                 <h3>Constructor</h3>
                 <?js= self.partial('methods-summary.tmpl', [doc]) ?>                  
             <?js } else { ?>
@@ -112,7 +112,7 @@
                 <?js= self.partial('methods-summary.tmpl', methods) ?>
             <?js } ?>
 
-            <?js if (doc.kind === 'class') { ?>
+            <?js if (doc.kind === 'class' && !doc.static) { ?>
                 <h3>Constructor Details</h3>
                 <?js= self.partial('method-details.tmpl', doc) ?>   
                 <?js if(doc.scope != "static") { ?>
