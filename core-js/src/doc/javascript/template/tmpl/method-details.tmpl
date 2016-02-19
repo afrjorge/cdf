@@ -3,13 +3,11 @@ var data = obj;
 var self = this;
 ?>
 
-<table id="<?js= id ?>" class="<?js= data.access != null ? data.access : 'public' ?> <?js= data.deprecated ? 'deprecated' : '' ?> <?js= data.inherited ? 'inherited' : '' ?>">
+<table id="<?js= id ?>">
     <thead>
         <tr>
-            <th>
-                <?js= data.name + (data.kind === "class" && data.scope === "static" ? '': data.signature || '' )  ?>
+            <th><strong><?js= (data.kind == "class" ? "new " : "") + data.name ?></strong><?js= (data.kind === "class" && data.scope === "static" ? '': data.signature || '') + (data.returns && data.returns.length? ":" : "") ?>
                 <?js if (data.returns && data.returns.length) { ?>
-                :
                     <?js data.returns.forEach(function(r, i) { ?>
                       <?js= self.partial('type.tmpl', r.type.names) ?>
                       <?js if (i < data.returns.length-1) { ?>|<?js } ?>
@@ -22,19 +20,16 @@ var self = this;
     <tbody>
         <tr>
             <td>
-                <p>
-                <?js if(!data.description){ ?>
-                    <?js= data.summary ?> 
-                <?js } else { ?>
-                    <?js= data.description ?>
-                <?js } ?>
-                </p>
+                <?js var desc = (!data.description? (!data.summary? "" : data.summary) : data.description);
+                desc = !(desc.indexOf("<p>") == 0) ? "<p>" + desc + "</p>" : desc ?>
+
+                <?js= desc ?>
                 
+                <?js= this.partial('details.tmpl', data) ?>
+
                 <?js if (data.params && params.length) { ?>
                     <?js= this.partial('params.tmpl', params) ?>
-                <?js } ?>
-
-                <?js= this.partial('details.tmpl', data) ?>
+                <?js } ?>                
 
                 <?js if (data.fires && fires.length) { ?>
                     <p><strong>Fires:</strong>
@@ -95,6 +90,18 @@ var self = this;
                             <?js }); ?>
                         </tbody>
                     </table>
+                <?js } ?>
+
+                <?js if (data.see && see.length) {?>
+                <p>
+                    <strong>See also:&nbsp;</strong>
+                    <?js see.forEach(function(s, i) { ?>
+                        <?js= self.linkto(s) ?>
+                        <?js if(i < see.length-1) { ?>
+                            <?js= ", " ?>
+                        <?js } ?>
+                    <?js }) ?>
+                </p>
                 <?js } ?>
 
                 <?js if (data.examples && examples.length) { ?>

@@ -74,6 +74,7 @@
                     <?js= self.partial('type.tmpl', param.type.names) ?>
                 <?js } ?>
                 <?js if (params.hasAttributes) {?>
+                    <div>
                     <?js if (param.optional) { ?>
                         <?js= self.partial('modifier.tmpl', {
                             class: "gray",
@@ -89,7 +90,7 @@
                             modifier: "Repeatable"
                         }) ?>
                     <?js } ?>                
-      
+                    </div>
                 <?js } ?>
             </td>
             <td>

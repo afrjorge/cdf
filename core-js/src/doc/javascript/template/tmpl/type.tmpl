@@ -11,7 +11,7 @@
 
       data.forEach(function(name, i) {
       	var regex = /array.<(.*)>/; ?>
-        <span class="param-type"><code>    
+        <code>    
         <?js if(basicJavascriptTypes.indexOf(name.toLowerCase()) >= 0){ ?>
             <?js= self.linkto(basicJavascriptTypesLink + name, capitalize(name)) ?>
         <?js} else if(m = regex.exec(name.toLowerCase())) { ?>
@@ -19,7 +19,7 @@
         <?js} else {?>
           <?js= self.linkto(name, self.htmlsafe(name)) ?>
         <?js}?>
-        </code></span>
+        </code>
         <?js if (i < data.length-1) { ?>|<?js } ?>
 		  <?js });
     } ?>
