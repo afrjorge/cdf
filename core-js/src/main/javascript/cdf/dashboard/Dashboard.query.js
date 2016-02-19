@@ -25,17 +25,17 @@ define([
    * @description The base query object, from where other query types can be extended.
    *
    * @type {cdf.queries.BaseQuery}
-   * @alias cdf.dashboard.Dashboard~_BaseQuery
+   * @memberof cdf.dashboard.Dashboard
    * @private
    */
   var _BaseQuery = Base;
 
   /**
-   * @summary Object used for generating new query objects.
-   * @description Object used for generating new query objects. 
+   * @summary Object used to generate new query objects.
+   * @description Object used to generate new query objects.
    *
    * @type {Object}
-   * @alias cdf.dashboard.Dashboard~globalQueryFactories
+   * @memberof cdf.dashboard.Dashboard
    * @private
    */
   var globalQueryFactories = new Container();
@@ -64,7 +64,7 @@ define([
      * @summary Gets the base query object constructor, from where other query types can be extended.
      * @description Gets the base query object constructor, from where other query types can be extended. 
      *
-     * @return {cdf.queries.BaseQuery} the base query constructor
+     * @return {cdf.queries.BaseQuery} The base query constructor.
      */
     getBaseQuery: function() {
       return _BaseQuery;
@@ -75,12 +75,12 @@ define([
      * @description <p>Register a {@link cdf.queries.BaseQuery|BaseQuery} constructor globally.</p>
      *              <p>If the query argument is a simple query object and not a constructor, 
      *              it copies all the deepProperties from the {@link cdf.queries.BaseQuery|BaseQuery}
-     *              to the _deepProperties_ of the new constructor.</p>
-     *              <p>Same as {@link cdf.dashboard.Dashboard.v|registerGlobalQuery} but afects the 
-     *              current dashboard instance.</p>
+     *              to the `deepProperties` of the new constructor.</p>
+     *              <p>Same as {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}
+     *              but affects the current dashboard instance.</p>
      *
      * @param {string} type The type of the query constructor.
-     * @param {cdf.queries.BaseQuery} query The constructor of the query object.
+     * @param {cdf.queries.BaseQuery} query The constructor of the query `object`.
      */
     registerQuery: function(type, query) {
       var BaseQuery = this.getBaseQuery();
@@ -108,7 +108,7 @@ define([
      * @description Determines if a given query type is registered in the current dashboard.
      *
      * @param {string} type The query type.
-     * @return {boolean} _true_ if the query type has been registered for this dashboard.
+     * @return {boolean} `true` if the query type has been registered for this dashboard.
      */
     hasQuery: function(type) {
       return Boolean(this.queryFactories && this.queryFactories.has('Query', type));
@@ -117,18 +117,17 @@ define([
     /**
      * @summary Given a query definition object, returns its query type.
      * @description <p>Given a query definition object, returns its query type. The query can have three
-     *              groups of types. First _cda_ with queries using the CDA plugin. Then _legacy_, to be
-     *              used xactions, and an arbitrary value for CPK data sources.</p>
+     *              groups of types. First `cda`, with queries using the CDA plugin. Then `legacy`,
+     *              using xactions, and an arbitrary value for CPK data sources.</p>
      *
      * @param {Object} qd The query definition object.
-     * @param {String} [qd.dataSource] The name of the datasource
-     * @param {String} [qd.queryType] The query type in case it is from CPK
-     * @param {Object} [qd.query] The query in case of it being legacy
-     * @param {String} [qd.path] The path of the CDA file holding the query
-     * @param {String} [qd.dataAccessId] The name of the query in the CDA file 
+     * @param {String} [qd.dataSource] The name of the datasource.
+     * @param {String} [qd.queryType] The query type in case it is from CPK.
+     * @param {Object} [qd.query] The query in case of it being legacy.
+     * @param {String} [qd.path] The path of the CDA file holding the query.
+     * @param {String} [qd.dataAccessId] The name of the query in the CDA file .
      * @return {String} The query type associated with the query definition object provided.
-     * @return {Undefined} The query is not found
-     * @throws {Error} In case the datasource name is invalid
+     * @return {Undefined} The query is not found.
      */
     detectQueryType: function(qd) {
       if(qd) {
@@ -160,12 +159,11 @@ define([
      * @description <p>Given a type and options, returns the query object for running that particular query.
      *              If a data source name is provided as an option, also include all options from it.</p>
      *
-     * @param {String} [type=cda] The query type
-     * @param {Object} opts An object containing the query options.
-     * @param {Object} [opts.dataSource] The datasource of the query 
-     * @param {String} [opts.queryType] The query type
-     * @return {cdf.queries.BaseQuery} The query instance from the required _type_ and extended with the _opts_
-     * @throws {Error} In case the datasource name is invalid
+     * @param {String} [type=cda] The query type.
+     * @param {Object} [opts] An `object` containing the query options.
+     * @param {Object} [opts.dataSource] The datasource of the query.
+     * @param {String} [opts.queryType] The query type.
+     * @return {cdf.queries.BaseQuery} The query instance from the required `type` and extended with the `opts`.
      * @see cdf.dashboard.Dashboard#getDataSource
      */
     getQuery: function(type, opts) {
@@ -201,10 +199,10 @@ define([
     /**
      * @summary Tests if a query definition is valid or not.
      * @description <p>Tests if a query definition is valid or not. It checks if the return value of the 
-     *              {@link cdf.dashboard.Dashboard#detectQueryType|detectQueryType} is not _undefined_.</p>
+     *              {@link cdf.dashboard.Dashboard#detectQueryType|detectQueryType} is not `undefined`.</p>
      *
      * @param {Object} queryDefinition The query definition object.
-     * @return {boolean} _true_ if the query definition is valid.
+     * @return {boolean} `true` if the query definition is valid.
      * @see cdf.dashboard.Dashboard#detectQueryType
      */
     isValidQueryDefinition: function(queryDefinition) {
@@ -215,18 +213,18 @@ define([
      * @summary Lists the registered query types in this dashboard.
      * @description <p>Lists the registered query types in this dashboard.</p>
      *
-     * @return {Array<String>} An array containing the registered query types.
+     * @return {Array<String>} An `array` containing the registered query types.
      */
     listQueries: function() {
       return _.keys(this.queryFactories.listType('Query'));
     }
   });
 
-  return /** @lends cdf.dashboard.Dashboard.query */ {
+  return /** @lends cdf.dashboard.Dashboard */ {
 
     /**
-     * @summary Sets the {@link cdf.quereis.BaseQuery|BaseQuery} constructor.
-     * @description <p>Sets the {@link cdf.quereis.BaseQuery|BaseQuery} constructor.</p> 
+     * @summary Sets the {@link cdf.queries.BaseQuery|BaseQuery} constructor.
+     * @description <p>Sets the {@link cdf.queries.BaseQuery|BaseQuery} constructor.</p> 
      *              <p>Later, this constructor is used to create the query objects for the different
      *              query types.</p>
      * 
@@ -245,12 +243,12 @@ define([
      *              <p>If the query argument is a simple query object and not a constructor, 
      *              it copies all the deepProperties from the {@link cdf.queries.BaseQuery|BaseQuery}
      *              to the _deepProperties_ of the new constructor.</p>
-     *              <p>Same as {@link cdf.dashboard.Dashboard.registerQuery|registerQuery} but afects the 
+     *              <p>Same as {@link cdf.dashboard.Dashboard.registerQuery|registerQuery} but affects the
      *              global scope.</p>
      *
      * @param {String} type The query type.
      * @param {cdf.queries.BaseQuery} query The query object.
-     * @see cdf.dashboard.Dashboard.registerQuery
+     * @see cdf.dashboard.Dashboard#registerQuery
      */
     registerGlobalQuery: function(type, query) {
       var BaseQuery = _BaseQuery;
