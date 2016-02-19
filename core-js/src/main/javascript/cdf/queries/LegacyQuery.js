@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2015 Webdetails, a Pentaho company. All rights reserved.
+ * Copyright 2002 - 2016 Webdetails, a Pentaho company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -22,14 +22,15 @@ define([
 ], function(Logger, XactionComponentExt, BaseQuery, Dashboard, _, $, Utils) {
 
   /**
-   * Creates a new metadata object with properties colIndex, colType and colName.
+   * @summary Creates a new metadata `object`.
+   * @description Creates a new metadata `object` with properties colIndex, colType and colName.
    *
-   * @alias makeMetadataElement
    * @memberof cdf.queries.LegacyQuery
    * @param {number} idx  The index of the element.
    * @param {string} name The name of the element.
    * @param {string} type The type of the element.
-   * @return {{colIndex: number, colType: string, colName: string}} The metadata object.
+   * @return {{colIndex: number, colType: string, colName: string}} The metadata `object`.
+   * @private
    */
   function makeMetadataElement(idx, name, type) {
     return {"colIndex": idx || 0, "colType": type || "String", "colName": name || "Name"};
@@ -68,16 +69,18 @@ define([
     },
 
     /**
-     * Initializes a legacy query.
+     * @summary Initializes a legacy query.
+     * @description Initializes a legacy query.
      *
-     * @param {object} opts The query definition object.
+     * @param {object} opts The query definition `object`.
      */
     init: function(opts) {
       this.setOption('queryDef', opts);
     },
 
     /**
-     * Gets the success callback handler for the provided success callback function.
+     * @summary Gets the success callback handler for the provided success callback function.
+     * @description Gets the success callback handler for the provided success callback function.
      *
      * @param {function} callback Callback to execute after the query is successful.
      * @return {function} Success callback handler.
@@ -107,11 +110,12 @@ define([
     },
 
     /**
-     * Builds the query definition object.
+     * @summary Builds the query definition `object`.
+     * @description Builds the query definition `object`.
      *
      * @private
      * @param {object} overrides Options that override the existing ones.
-     * @return {object} Query definition object.
+     * @return {object} The query definition `object`.
      */
     buildQueryDefinition: function(overrides) {
       return _.extend({}, this.getOption('queryDef'), overrides);
