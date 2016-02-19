@@ -24,7 +24,9 @@ define([
   /**
    * @class cdf.queries.CpkQuery
    * @amd cdf/queries/CpkQuery
-   * @classdesc Class that represents a CPK query.
+   * @classdesc Class that represents a CPK query. This class will be registered
+   *            globally using the {@link cdf.dashboard.Dashboard|Dashboard} function
+   *            {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}.
    */
   var CpkEndpointsOpts = /** @lends cdf.queries.CpkQuery# */{
     name: "cpk",
@@ -45,7 +47,8 @@ define([
     },
 
     /**
-     * Initializes a CPK query.
+     * @summary Initializes a CPK query.
+     * @description Initializes a CPK query.
      *
      * @param {object} opts              An object containing query definitions.
      * @param {string} opts.pluginId     The plugin identifier.
@@ -54,6 +57,7 @@ define([
      * @param {string} opts.stepName     The target step name.
      * @param {object} opts.systemParams System parameters.
      * @param {object} opts.ajaxOptions  {@link http://api.jquery.com/jquery.ajax/|jQuery.ajax} options.
+     * @see {@link http://api.jquery.com/jquery.ajax/|jQuery.ajax}
      */
     init: function(opts) {
       if(_.isString(opts.pluginId) && _.isString(opts.endpoint)) {
@@ -73,10 +77,11 @@ define([
     },
 
     /**
-     * Builds the query definition object.
+     * @summary Builds the query definition object.
+     * @description Builds the query definition object.
      *
      * @param {object} overrides Options that override the existing ones.
-     * @return {*} Query definition object.
+     * @return {object} Query definition object.
      *
      * @private
      */
@@ -130,7 +135,9 @@ define([
     },
 
     /**
-     * Gets the success handler that executes the provided callback when the query executes successfully.
+     * @summary Gets the success handler that executes the provided success callback.
+     * @description Gets the success handler that executes the provided callback
+     *              when the query executes successfully.
      *
      * @param {function} callback Callback to call after the query is successful.
      * @return {function} Success callback handler.
