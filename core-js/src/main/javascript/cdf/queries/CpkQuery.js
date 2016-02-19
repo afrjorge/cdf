@@ -23,22 +23,66 @@ define([
 
   /**
    * @class cdf.queries.CpkQuery
-   * @amd cdf/queries/CpkQuery
-   * @classdesc Class that represents a CPK query. This class will be registered
-   *            globally using the {@link cdf.dashboard.Dashboard|Dashboard} function
-   *            {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}.
+   * @classdesc <p>Class that represents a CPK query. This class will be registered
+   *            globally using the static dashboard function
+   *            {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}.</p>
+   *            <p>The constructor of this class is created dynamically and registered
+   *            in the dashboard query container
+   *            {@link cdf.dashboard.Dashboard#queryFactories|queryFactories}.</p>
+   *            <p>To create a new CPK query use the dashboard function
+   *            {@link cdf.dashboard.Dashboard#getQuery|getQuery}.</p>
+   * @staticClass
+   * @extends cdf.queries.BaseQuery
+   * @example
+   * dashboard.addDataSource("myCpkQuery", {queryType: "cpk", ...});
+   * dashboard.getQuery({dataSource: "myCpkQuery"})
+   *          .doQuery(successCallback, errorCallback);
    */
   var CpkEndpointsOpts = /** @lends cdf.queries.CpkQuery# */{
+    /**
+     * @summary The class name.
+     * @description The class name.
+     *
+     * @type {string}
+     * @const
+     * @readonly
+     * @protected
+     * @default "cpk"
+     */
     name: "cpk",
+
+    /**
+     * @summary The class label.
+     * @description The class label.
+     *
+     * @type {string}
+     * @const
+     * @readonly
+     * @protected
+     * @default "CPK Query"
+     */
     label: "CPK Query",
+
+    /**
+     * @summary The default properties.
+     * @description The default properties.
+     *
+     * @type {Object}
+     * @property {string} url="" The target URL.
+     * @property {string} pluginId="" The plugin identifier.
+     * @property {string} endpoint="" The target endpoint.
+     * @property {string} systemParams={} The system parameters.
+     * @property {Object} ajaxOptions={dataType:"json",type:"POST",async:true,xhrFields:{withCredentials:true}} The {@link http://api.jquery.com/jquery.ajax/|jQuery.ajax} options for the query.
+     * @protected
+     */
     defaults: {
-      url: '',
-      pluginId: '',
-      endpoint: '',
+      url: "",
+      pluginId: "",
+      endpoint: "",
       systemParams: {},
       ajaxOptions: {
-        dataType: 'json',
-        type: 'POST',
+        dataType: "json",
+        type: "POST",
         async: true,
         xhrFields: {
           withCredentials: true
@@ -82,8 +126,6 @@ define([
      *
      * @param {object} overrides Options that override the existing ones.
      * @return {object} Query definition object.
-     *
-     * @private
      */
     buildQueryDefinition: function(overrides) {
       var myself = this;
