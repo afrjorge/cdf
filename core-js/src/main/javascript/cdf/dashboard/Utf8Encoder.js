@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2015 Webdetails, a Pentaho company. All rights reserved.
+ * Copyright 2002 - 2016 Webdetails, a Pentaho company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -73,10 +73,12 @@ define(["../lib/jquery"], function($) {
    * @class cdf.dashboard.Utf8Encoder
    * @amd cdf/dashboard/Utf8Encoder
    * @classdesc Auxiliary UTF-8 encoder.
+   * @see http://www.webtoolkit.info/javascript_utf8.html
    */
   return /** @lends cdf.dashboard.Utf8Encoder */ {
     /**
-     * Prepares an UTF8 string to be used in Opera or Internet Explorer
+     * @summary Prepares an UTF8 string to be used in Opera or Internet Explorer.
+     * @description Prepares an UTF8 string to be used in Opera or Internet Explorer.
      *
      * @param {string} s String to be encoded.
      * @return {?string} Encoded/prepared string.
@@ -96,10 +98,11 @@ define(["../lib/jquery"], function($) {
     },
 
     /**
-     * Prepares an array containing UTF-8 strings to be used in Opera or Internet Explorer.
+     * @summary Prepares an array containing UTF-8 strings to be used in Opera or Internet Explorer.
+     * @description Prepares an array containing UTF-8 strings to be used in Opera or Internet Explorer.
      *
-     * @param {*} value Value to be encoded.
-     * @return {Array} Array with encoded/prepared elements.
+     * @param {string|array|number} value Value to be encoded.
+     * @return {string|array|number} Array, string or number with encoded/prepared elements.
      */
     encode_prepare_arr: function(value) {
       var myself = this;
