@@ -81,9 +81,6 @@
                             modifier: "Optional"
                         }) ?>
                     <?js } ?>
-                    <?js if (param.nullable) { ?>
-                        <?js= self.partial('modifier.tmpl', "Nullable") ?>
-                    <?js } ?>
                     <?js if (param.variable) { ?>
                         <?js= self.partial('modifier.tmpl', {
                             class: "purple",

@@ -1,14 +1,13 @@
 <?js
     var data = obj;
     var self = this;
-    var basicJavascriptTypes = ["string", "number", "boolean", "array", "object", "date", "function"];
+    var basicJavascriptTypes = ["string", "number", "boolean", "array", "object", "date", "function", "null"];
     var basicJavascriptTypesLink = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/";
 
     var capitalize = function(s){
     	return s.toLowerCase().replace( /\b./g, function(a){ return a.toUpperCase(); } );
     };
     if(data){
-
       data.forEach(function(name, i) {
       	var regex = /array.<(.*)>/; ?>
         <code>    
