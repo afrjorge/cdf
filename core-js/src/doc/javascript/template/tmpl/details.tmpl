@@ -26,7 +26,7 @@ if (data.defaultvalue && (data.defaultvaluetype === 'object' || data.defaultvalu
     <p><strong>Inherited From:</strong> <?js= this.linkto(data.inherits, this.htmlsafe(data.inherits)) ?></p>
 <?js } ?>
 
-<?js if (data.defaultvalue) {?>
+<?js if (data.defaultvalue || data.defaultvalue == false) {?>
     <p><strong>Default Value: </strong><?js= data.defaultvalue ?></p>
 <?js } ?>
 

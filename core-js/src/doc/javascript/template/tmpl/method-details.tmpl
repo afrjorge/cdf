@@ -34,7 +34,7 @@ var self = this;
                 <?js if (data.fires && fires.length) { ?>
                     <p><strong>Fires:</strong>
                     <?js fires.forEach(function(f,i) { ?>
-                        <?js= self.linkto(f) ?>
+                        <?js= self.linkto(f, f.split('"').join('')) ?>
                         <?js if (i < fires.length-1) { ?>, <?js } ?>
                     <?js }); ?>
                     </p>
@@ -43,7 +43,7 @@ var self = this;
                 <?js if (data.listens && listens.length) { ?>
                     <p><strong>Listens to Events:</strong>
                     <?js listens.forEach(function(f) { ?>
-                        <?js= self.linkto(f) ?>
+                        <?js= self.linkto(f, f.split('"').join('')) ?>
                         <?js if (i < listens.length-1) { ?>, <?js } ?>
                     <?js }); ?>
                     </p>
@@ -52,7 +52,7 @@ var self = this;
                 <?js if (data.listeners && listeners.length) { ?>
                     <p><strong>Listeners of This Event:</strong>
                     <?js listeners.forEach(function(f) { ?>
-                        <?js= self.linkto(f) ?>
+                        <?js= self.linkto(f, f.split('"').join('')) ?>
                         <?js if (i < listeners.length-1) { ?>, <?js } ?>
                     <?js }); ?>
                     </p>

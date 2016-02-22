@@ -641,6 +641,25 @@ exports.publish = function(taffyData, opts, tutorials) {
         }
     });
 
+    data().each(function(doclet) {
+        if(!doclet.ignore) {
+            if(doclet.description && doclet.description != "") {
+                doclet.description = doclet.description.split('</br>').join('');
+            }
+
+            if(doclet.classdesc && doclet.classdesc != "") {
+                doclet.classdesc = doclet.classdesc.split('</br>').join('');
+            }   
+
+            if(doclet.name && doclet.name != "") {
+                doclet.name = doclet.name.split('"').join('');
+            }
+            if(doclet.longname &&doclet.longname != "") {
+                doclet.longname = doclet.longname.split('"').join('');
+            }
+        }
+    });
+
     var members = helper.getMembers(data);
     members.tutorials = tutorials.children;
 
