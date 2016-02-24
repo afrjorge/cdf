@@ -3,10 +3,10 @@ var data = obj;
 var self = this;
 ?>
 
-<table id="<?js= id ?>">
+<table id="<?js= data.parsedName ?>">
     <thead>
         <tr>
-            <th><?js= id+":" ?> 
+            <th><?js= data.parsedName+":" ?> 
                 <?js if(data.type) { ?>
                     <code> <?js= self.partial('type.tmpl', data.type.names) ?></code>
                 <?js } ?>    

@@ -6,7 +6,7 @@ var self = this;
 <table id="<?js= id ?>">
     <thead>
         <tr>
-            <th><strong><?js= (data.kind == "class" ? "new " : "") + data.name ?></strong><?js= (data.kind === "class" && data.scope === "static" ? '': data.signature || '') + (data.returns && data.returns.length? ":" : "") ?>
+            <th><strong><?js= (data.kind == "class" ? "new " : "") + data.parsedName ?></strong><?js= (data.kind === "class" && data.scope === "static" ? '': data.signature || '') + (data.returns && data.returns.length? ":" : "") ?>
                 <?js if (data.returns && data.returns.length) { ?>
                     <?js data.returns.forEach(function(r, i) { ?>
                       <?js= self.partial('type.tmpl', r.type.names) ?>

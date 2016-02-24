@@ -19,7 +19,7 @@ var methods = obj;
             ?>
             <tr>
               <td> 
-                <a href="#<?js= method.name ?>"> <?js= (method.kind == "class" ? "new " : "") + method.name + (method.signature || '') ?> 
+                <a href="#<?js= method.name ?>"> <?js= (method.kind == "class" ? "new " : "") + method.parsedName + (method.signature || '') ?> 
                 </a>
                 <?js if (method.returns && method.returns.length) { ?>
                 :

@@ -381,7 +381,7 @@ function buildMembers(members, title, linktoFn) {
     var memberNav = "";
     members.forEach(function(member) {
         var innerNav = "";
-        memberNav += '<li>' + linktoFn(member.longname, member.name) + '</li>';
+        memberNav += '<li>' + linktoFn(member.longname, member.name.split('"').join('')) + '</li>';
         innerNav += buildMembers(member.interfaces, 'Interfaces', linktoFn);
         innerNav += buildMembers(member.classes, 'Classes', linktoFn);
         innerNav += buildMembers(member.events, 'Events', linktoFn);
@@ -652,10 +652,10 @@ exports.publish = function(taffyData, opts, tutorials) {
             }   
 
             if(doclet.name && doclet.name != "") {
-                doclet.name = doclet.name.split('"').join('');
+                doclet.parsedName = doclet.name.split('"').join('');
             }
             if(doclet.longname &&doclet.longname != "") {
-                doclet.longname = doclet.longname.split('"').join('');
+                doclet.parsedLongname = doclet.longname.split('"').join('');
             }
         }
     });
