@@ -18,6 +18,7 @@ define([], function() {
    *
    * @class cdf.dashboard.RefreshEngine
    * @amd cdf/dashboard/RefreshEngine
+   * @summary Class that manages the periodic refresh of components.
    * @classdesc Class that manages the periodic refresh of components.
    * @param {cdf.dashboard.Dashboard} dashboard The dashboard instance to be managed by the refresh engine.
    */

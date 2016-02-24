@@ -47,9 +47,10 @@ define([
   /**
    * @class cdf.dashboard.Dashboard.query
    * @amd cdf/dashboard/Dashboard.query
-   * @summary A class representing an extension to the Dashboard class for managing queries.
-   * @classdesc <p>A class representing an extension to the Dashboard class for managing queries.</p>
-   *            <p>Its methods allow registering and creating queries.</p>
+   * @summary A class representing an extension to the {@link cdf.dashboard.Dashboard|Dashboard}
+   *          class for managing queries.
+   * @classdesc <p>A class representing an extension to the {@link cdf.dashboard.Dashboard|Dashboard}
+   *            class for managing queries.</p><p>Its methods allow registering and creating queries.</p>
    * @ignore
    */
   Dashboard.implement(/** @lends cdf.dashboard.Dashboard# */{

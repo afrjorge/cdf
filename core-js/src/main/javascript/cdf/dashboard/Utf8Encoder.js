@@ -72,16 +72,18 @@ define(["../lib/jquery"], function($) {
   /**
    * @class cdf.dashboard.Utf8Encoder
    * @amd cdf/dashboard/Utf8Encoder
+   * @summary Auxiliary UTF-8 encoder.
    * @classdesc Auxiliary UTF-8 encoder.
    * @see http://www.webtoolkit.info/javascript_utf8.html
+   * @staticClass
    */
   return /** @lends cdf.dashboard.Utf8Encoder */ {
     /**
-     * @summary Prepares an UTF8 string to be used in Opera or Internet Explorer.
-     * @description Prepares an UTF8 string to be used in Opera or Internet Explorer.
+     * @summary Prepares an UTF-8 string to be used in Opera or Internet Explorer.
+     * @description Prepares an UTF-8 string to be used in Opera or Internet Explorer.
      *
-     * @param {string} s String to be encoded.
-     * @return {?string} Encoded/prepared string.
+     * @param {string} s String to be prepared.
+     * @return {?string} The prepared string.
      */
     encode_prepare: function(s) {
       if(s != null) {
@@ -101,8 +103,8 @@ define(["../lib/jquery"], function($) {
      * @summary Prepares an array containing UTF-8 strings to be used in Opera or Internet Explorer.
      * @description Prepares an array containing UTF-8 strings to be used in Opera or Internet Explorer.
      *
-     * @param {string|array|number} value Value to be encoded.
-     * @return {string|array|number} Array, string or number with encoded/prepared elements.
+     * @param {string|array|number} value Value to be prepared.
+     * @return {string|array|number} The prepared value.
      */
     encode_prepare_arr: function(value) {
       var myself = this;

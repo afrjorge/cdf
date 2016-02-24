@@ -14,6 +14,7 @@
 /**
  * @class cdf."Dashboard.Bootstrap"
  * @amd cdf/Dashboard.Bootstrap
+ * @summary Represents a {@link http://getbootstrap.com|bootstrap} dashboard.
  * @classdesc Represents a {@link http://getbootstrap.com|bootstrap} dashboard
  *            aggregating all the classes in the Dashboard hierarchy.
  *            It's a specialization of the base abstract

@@ -16,7 +16,9 @@ define(function() {
   /**
    * @class cdf.Logger
    * @amd cdf/Logger
+   * @summary Allows logging messages in the console.
    * @classdesc This is a static class used for logging messages in the console.
+   * @staticClass
    */
   return /** @lends cdf.Logger */ {
     /**

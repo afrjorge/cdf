@@ -14,6 +14,7 @@
 /**
  * @class cdf."Dashboard.Blueprint"
  * @amd cdf/Dashboard.Blueprint
+ * @summary Represents a {@link http://http://blueprintcss.org|blueprint} dashboard.
  * @classdesc Represents a {@link http://http://blueprintcss.org|blueprint}
  *            dashboard aggregating all the classes in the Dashboard
  *            hierarchy. It's a specialization of the base abstract

@@ -22,7 +22,10 @@ define([
   /**
    * @class cdf.dashboard.Dashboard.lifecycle
    * @amd cdf/dashboard/Dashboard.lifecycle
-   * @classdesc A class representing an extension to the Dashboard class for lifecycle.
+   * @summary A class representing an extension to the {@link cdf.dashboard.Dashboard|Dashboard}
+   *          class for lifecycle.
+   * @classdesc A class representing an extension to the {@link cdf.dashboard.Dashboard|Dashboard}
+   *            class for lifecycle.
    * @ignore
    */
   Dashboard.implement(/** @lends cdf.dashboard.Dashboard# */{

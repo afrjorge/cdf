@@ -147,10 +147,10 @@ define([
     //postChange: undefined,
 
     /**
-     * @summary The contructor of a BaseComponent.
      * @description Constructs a BaseComponent.
      *
      * @constructs
+     * @summary Holds the core functionalities present in all components.
      * @classdesc The BaseComponent. Module that holds everything related to components.
      * @extends {@link http://dean.edwards.name/weblog/2006/03/base/|Base}
      * @extends {@link http://backbonejs.org/#Events|Backbone.Events}

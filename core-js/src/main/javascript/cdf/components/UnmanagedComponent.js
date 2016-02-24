@@ -19,11 +19,13 @@ define([
 ], function(BaseComponent, _, $, Logger) {
 
   /**
-   * The constructor of an unmanaged component.
+   * @description The constructor of an unmanaged component.
    *
    * @class cdf.components.UnmanagedComponent
    * @extends cdf.components.BaseComponent
    * @amd cdf/components/UnmanagedComponent
+   * @summary Advanced version of the {@link cdf.components.BaseComponent|BaseComponent}
+   *          that allows control over the core CDF lifecycle.
    * @classdesc <p>The <code>UnmanagedComponent</code> is an advanced version of the
    * {@link cdf.components.BaseComponent|BaseComponent} that allows control over the core CDF lifecycle for
    * implementing components.</p>
