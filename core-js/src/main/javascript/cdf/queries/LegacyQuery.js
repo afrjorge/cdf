@@ -39,6 +39,7 @@ define([
 
   /**
    * @class cdf.queries.LegacyQuery
+   * @summary Class that represents MDX, SQL and legacy (calling xactions) queries.
    * @classdesc <p>Class that represents MDX, SQL and legacy (calling xactions) queries.
    *            These will be registered globally using the static dashboard function
    *            {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}.</p>

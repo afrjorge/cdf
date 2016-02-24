@@ -625,7 +625,7 @@ define([
      *   ajax call being made.
      * @param {function} success Success callback.
      * @param {function} [always] Callback that is ran independently of call status.
-     * @param {function} [canceled] Callback that is ran when the call has been superseeded by a more recent one.
+     * @param {function} [canceled] Callback that is ran when the call has been superseded by a more recent one.
      *   It receives the raw received data.
      * @return {function} Success handler function.
      */
@@ -682,7 +682,7 @@ define([
      * @description Trigger an error event on the component. Takes as arguments the error message 
      *              and, optionally, a `cause` object. It also calls 
      *              {@link cdf.components.UnmanagedComponent#errorNotification|errorNotification}
-     *              showning the notification to the user.
+     *              showing the notification to the user.
      *
      * @param {string} msg          Error message.
      * @param {string} [cause=null] Cause for the error.

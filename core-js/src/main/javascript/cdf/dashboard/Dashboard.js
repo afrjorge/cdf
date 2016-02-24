@@ -364,21 +364,21 @@ define([
 
     /**
      * @summary Gets the dashboard's wcdfSettings.
-     * @description Gets the dashboard's wcdfSettings. It will be overriden returning 
+     * @description Gets the dashboard's wcdfSettings. It will be overridden returning 
      *              the proper wcdf settings in embedded scenarios.
      * 
      * @abstract
      * @return {Object} The dashboard's wcdf settings object.
      */
     getWcdfSettings: function() {
-      Logger.info("getWcdfSettings was not overriden, returning empty object");
+      Logger.info("getWcdfSettings was not overridden, returning empty object");
       return {};
     },
 
     /**
      * @summary Normalizes an HTML element identifier.
      * @description  Normalizes an HTML element identifier. This method is meant to be used when 
-     *               we need to directly manipulate an HTML element. It will be overriden returning 
+     *               we need to directly manipulate an HTML element. It will be overridden returning 
      *               the proper identifier in embedded scenarios.
      *
      * @abstract

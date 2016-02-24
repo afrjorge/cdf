@@ -23,6 +23,7 @@ define([
 
   /**
    * @class cdf.queries.CpkQuery
+   * @classdesc Class that represents a CPK query.
    * @classdesc <p>Class that represents a CPK query. This class will be registered
    *            globally using the static dashboard function
    *            {@link cdf.dashboard.Dashboard.registerGlobalQuery|registerGlobalQuery}.</p>
