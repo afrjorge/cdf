@@ -48,13 +48,17 @@
                 <?js }); ?></ul>
             <?js } ?>
 
+            <?js var namespaces = self.find({kind: 'namespace', memberof: doc.longname});
+            if (!isGlobalPage && namespaces && namespaces.length) { ?>
+                <h3>Nested Namespaces</h3>
+                <?js= self.partial('summary.tmpl', namespaces) ?>
+            <?js } ?>
+
             <?js var classes = self.find({kind: 'class', memberof: doc.longname});
             if (!isGlobalPage && classes && classes.length) { ?>
                 <h3>Classes</h3>
 
-                <dl><?js classes.forEach(function(c) { ?>
-                    <dt><?js= self.linkto(c.longname, c.parsedName) ?></dt>
-                <?js }); ?></dl>
+                <?js= self.partial('summary.tmpl', classes) ?>
             <?js } ?>
 
             <?js var mixins = self.find({kind: 'mixin', memberof: doc.longname});
@@ -63,15 +67,6 @@
 
                 <dl><?js mixins.forEach(function(m) { ?>
                     <dt><?js= self.linkto(m.longname, m.name) ?></dt>
-                <?js }); ?></dl>
-            <?js } ?>
-
-            <?js var namespaces = self.find({kind: 'namespace', memberof: doc.longname});
-            if (!isGlobalPage && namespaces && namespaces.length) { ?>
-                <h3>Namespaces</h3>
-
-                <dl><?js namespaces.forEach(function(n) { ?>
-                    <dt><?js= self.linkto(n.longname, n.name) ?></dt>
                 <?js }); ?></dl>
             <?js } ?>
 
