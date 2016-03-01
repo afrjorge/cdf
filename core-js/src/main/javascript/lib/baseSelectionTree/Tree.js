@@ -48,7 +48,9 @@ define([
       }
       if (this.children()) {
         result = combineCallback(this.children().map(function (child) {
-          return child.walkDown(itemCallback, combineCallback, alwaysCallback);
+          if(child) {
+            return child.walkDown(itemCallback, combineCallback, alwaysCallback);
+          }
         }));
       } else {
         result = itemCallback(this);

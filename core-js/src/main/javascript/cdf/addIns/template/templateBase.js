@@ -112,7 +112,7 @@ define([
               break;
             case 'MUSTACHE':
               Mustache.Formatters = helpers;
-              html = Mustache.render((_.isFunction(opt.template) ? opt.template() : opt.template), model);
+              html = Mustache.render(Utils.ev(opt.template), model);
               break;
             default:
               html = this.processMessage(opt, 'invalidTemplateType', 'error');

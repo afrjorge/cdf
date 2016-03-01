@@ -697,7 +697,7 @@ Dashboards.init = function(components){
   // Now we need to go through all components we have and attach this
   // initInstance to all 
   _.chain(Dashboards.components)
-  .where({initInstance:undefined})
+  .filter(function(c) { return c.initInstance === undefined; })
   .each(function(c){ c.initInstance = initInstance});
   
   $(function() { myself.initEngine(initInstance); });
