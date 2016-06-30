@@ -24,5 +24,8 @@
         accepted values are: true | false
      -->
     <legacy-dashboard-context>false</legacy-dashboard-context>    
+    <cde-properties>
+        <path>resources/cde-properties/</path>
+    </cde-properties>
     
 </settings>
