@@ -19,15 +19,7 @@
  */
 
  var AnalyzerComponent = BaseComponent.extend({
-    /**
-     * @summary Store of parameterName/dateFormat Map - describes the dateFormats of the associated parameters.
-     * @description <p>Object which stores parameterName/dateFormat Map 
-     * - describes the dateFormats of the associated parameters eg. parameterName: "YYYY-MM-DD HH-mm-ss.0"</p>
-     * @type {Object}
-     * @default {}
-     */
-    dateFormats: {},
- 
+
     update: function() {
         this.clear();
         var options = this.getOptions();
@@ -60,7 +52,8 @@
             command: this.command == undefined ? "open" : this.command,
             showFieldList: this.showFieldList == undefined ? false : this.showFieldList,
             showRepositoryButtons: this.showRepositoryButtons == undefined ? false : this.showRepositoryButtons,
-            frameless: this.frameless == undefined ? false : this.frameless
+            frameless: this.frameless == undefined ? false : this.frameless,
+            dateFormats: this.dateFormats == undefined ? {} : this.dateFormats
         };
         // process params and update options
         $.map(this.parameters, function(k) {
