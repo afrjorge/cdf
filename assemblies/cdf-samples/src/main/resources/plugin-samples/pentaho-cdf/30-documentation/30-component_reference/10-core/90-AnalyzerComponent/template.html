@@ -96,6 +96,7 @@
       <div id="code">
         <textarea cols="80" rows="20" id="samplecode">
 
+Dashboards.addParameter("current_date", "2016/10/18 17:55:00");
 
 territorySalesAnalysis = 
 {
@@ -105,12 +106,13 @@ territorySalesAnalysis =
   path: "Steel Wheels/Widget Library/Analysis Views",
   action: "Territory Sales.xanalyzer",
   listeners:[],
-  parameters: [],
+  parameters: [["current_date","current_date"]],
   htmlObject: "sampleObject",
   editMode: true,
   showRepositoryButtons: false,
   showFieldList: false,
-  executeAtStart: true
+  executeAtStart: true,
+  dateFormats: {"current_date": "YYYY-MM-DD HH-mm-ss.0"}
 }
 
 
