@@ -14,8 +14,9 @@
 define([
   './AnalyzerComponent.ext',
   '../lib/jquery',
+  '../lib/moment',
   './BaseComponent'
-], function(AnalyzerComponentExt, $, BaseComponent) {
+], function(AnalyzerComponentExt, $, moment, BaseComponent) {
 
   return BaseComponent.extend({
     /**
