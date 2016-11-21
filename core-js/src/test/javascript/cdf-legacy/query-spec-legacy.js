@@ -131,9 +131,7 @@ describe("The Query class #", function() {
   });
 
   it("Test export with exportPage option", function(){
-    var d = $.Deferred();
-    d.resolve([]);
-    var ajax = spyOn($, "ajax").and.returnValue(d.promise());
+    var ajax = spyOn($, "ajax").and.returnValue($.Deferred().resolve([]).promise());
     var query = new Query({dataAccessId: "foo", path: "bar"});
     query.setOption('pageSize', 10);
     query.setOption('page', 20);
@@ -143,15 +141,17 @@ describe("The Query class #", function() {
     query.exportData('xls', {}, options);
 
     var settings = ajax.calls.mostRecent().args[0];
-    expect(settings.data.pageSize).toEqual( 0 );
-    expect(settings.data.pageStart).toEqual( 0 );
+    expect(settings.data.pageSize).toEqual(0);
+    expect(settings.data.pageStart).toEqual(0);
+
+    ajax.calls.reset();
 
     //exportPage = true (default value)
     options.exportPage = true;
     query.exportData('xls', {}, options);
 
-    var settings = ajax.calls.mostRecent().args[0];
-    expect(settings.data.pageSize).toEqual( 10 );
-    expect(settings.data.pageStart).toEqual( 20 );
+    settings = ajax.calls.mostRecent().args[0];
+    expect(settings.data.pageSize).toEqual(10);
+    expect(settings.data.pageStart).toEqual(20);
   });
 });
