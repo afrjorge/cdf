@@ -13,19 +13,15 @@
 
 define([
   "cdf/Dashboard.Clean",
-  "cdf/components/TextInputComponent"
-], function(Dashboard, TextInputComponent) {
+  "cdf/components/TextInputComponent",
+  "cdf/lib/jquery"
+], function(Dashboard, TextInputComponent, $) {
 
   /**
    * ## The Text Input Component
    */
-  fdescribe("The Text Input Component #", function() {
-
-    var dashboard = new Dashboard();
-    
-    dashboard.addParameter("input", "");
-
-    dashboard.init();
+  describe("The Text Input Component #", function() {
+    var dashboard;
 
     var textInputComponent = new TextInputComponent({
       name: "textInputComponent",
@@ -39,7 +35,26 @@ define([
       }
     });
 
-    dashboard.addComponent(textInputComponent);
+    var $htmlContainer = $("<div>");
+    var $htmlObject = $("<div />").attr("id", textInputComponent.htmlObject);
+
+    beforeEach(function() {
+      dashboard = new Dashboard();
+
+      dashboard.addParameter("input", "");
+
+      dashboard.init();
+      // add an element where the button will be inserted
+      $htmlContainer.append($htmlObject);
+      $("body").append($htmlContainer);
+
+      dashboard.addComponent(textInputComponent);
+    });
+
+    afterEach(function() {
+      $htmlObject.remove();
+      $htmlContainer.remove();
+    });
 
     /**
      * ## The Text Input Component # allows a dashboard to execute update
@@ -62,20 +77,39 @@ define([
     it("process change on each key up event", function (done) {
       textInputComponent.refreshOnEveryKeyUp = true;
 
-      // Fetches the input element
-      var inputElement = textInputComponent.placeholder().find("#" + textInputComponent.name);
-      
-      // Creates and triggers a keyup event on the input
-      var event = $.event("keyup");
-      event.keyCode = "x";
+      spyOn(textInputComponent.dashboard, "processChange").and.callFake(function(name) {
+        expect(name).toBe(textInputComponent.name);
+        delete textInputComponent.refreshOnEveryKeyUp;
+        done();
+      });
 
-      inputElement.trigger(event);
+      dashboard.update(textInputComponent);
 
+      spyOn(textInputComponent, "_setCursor").and.callFake(function() {
+        var $el = textInputComponent.placeholder().find("#" + textInputComponent.name);
 
+        // Change the value, so the new can be processed
+        $el.val("test");
+        // Creates and triggers a keyup event on the input
+        $el.trigger($.Event("keyup", {keyCode: 64}));
+      });
+    });
 
-      
+    /**
+     * Asynchronously sets the cursor position on update when the property refreshOnEveryKeyUp is true
+     */
+    it("Asynchronously sets the cursor position on update when the property refreshOnEveryKeyUp is true", function (done) {
+      textInputComponent.refreshOnEveryKeyUp = true;
+      spyOn(textInputComponent.dashboard, "processChange").and.callThrough();
 
-      delete textInputComponent.refreshOnEveryKeyUp;
+      spyOn(textInputComponent, "_setCursor").and.callFake(function(el, cursorPlace) {
+        expect(el).toBe($htmlObject.children()[0]);
+        expect(cursorPlace).toBe(textInputComponent.cursorPlace);
+        delete textInputComponent.refreshOnEveryKeyUp;
+        done();
+      });
+
+      dashboard.update(textInputComponent);
     });
   });
 });
