@@ -85,7 +85,7 @@ define([
 
       dashboard.update(textInputComponent);
 
-      spyOn(textInputComponent, "_setCursor").and.callFake(function() {
+      spyOn(textInputComponent, "_doAutoFocus").and.callFake(function() {
         var $el = textInputComponent.placeholder().find("#" + textInputComponent.name);
 
         // Change the value, so the new can be processed
