@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -55,81 +55,82 @@ define([
     /************************
      * Test Core Lifecycle *
      ************************/
+    describe("core", function() {
+      /**
+       * ## The CDF framework Dashboard Lifecycle # updates components
+       */
+      it("updates components", function(done) {
+        dashboard.init();
+        dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
 
-    /**
-     * ## The CDF framework Dashboard Lifecycle # updates components
-     */
-    it("updates components", function(done) {
-      dashboard.init();
-      dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
+        spyOn(shouldUpdate, "preExecution").and.callThrough();
+        //spyOn(shouldUpdate, "customfunction").and.callThrough();
+        spyOn(shouldUpdate, "postExecution").and.callThrough();
 
-      spyOn(shouldUpdate, "preExecution").and.callThrough();
-      //spyOn(shouldUpdate, "customfunction").and.callThrough();
-      spyOn(shouldUpdate, "postExecution").and.callThrough();
+        // listen to cdf:postExecution event
+        shouldUpdate.once("cdf:postExecution", function() {
+          expect(shouldUpdate.preExecution).toHaveBeenCalled();
+          //expect(shouldUpdate.customfunction).toHaveBeenCalled();
+          expect(shouldUpdate.postExecution).toHaveBeenCalled();
+          done();
+        });
 
-      // listen to cdf:postExecution event
-      shouldUpdate.once("cdf:postExecution", function() {
-        expect(shouldUpdate.preExecution).toHaveBeenCalled();
-        //expect(shouldUpdate.customfunction).toHaveBeenCalled();
-        expect(shouldUpdate.postExecution).toHaveBeenCalled();
-        done();
+        dashboard.update(shouldUpdate);
       });
 
-      dashboard.update(shouldUpdate);
-    });
-
-    /**
-     * ## The CDF framework Dashboard Lifecycle # by default doesn't ping the server and show timeout notifications [BACKLOG-5131]
-     */
-    it("by default doesn't ping the server and show timeout notifications [BACKLOG-5131]", function() {
-      // default value
-      expect(dashboard.serverCheckResponseTimeout).toEqual(Infinity);
-      dashboard.init();
-      // during init the value of context.sessionTimeout is passed via the "cdf/dashboard/Dashboard" AMD module configuration (see context.js)
-      expect(dashboard.serverCheckResponseTimeout).toEqual(contextObj.sessionTimeout * 900); // 90% converted to milliseconds
-    });
-
-    /**
-     * ## The CDF framework Dashboard Lifecycle # lets preExecution cancel updates
-     */
-    it("lets preExecution cancel updates", function(done) {
-      dashboard.init();
-      dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
-
-      spyOn(shouldNotUpdate, "preExecution").and.callThrough();
-      spyOn(shouldNotUpdate, "customfunction").and.callThrough();
-      spyOn(shouldNotUpdate, "postExecution").and.callThrough();
-
-      // listen to cdf:preExecution event
-      shouldUpdate.once("cdf:postExecution", function() {
-        expect(shouldNotUpdate.preExecution).toHaveBeenCalled();
-        expect(shouldNotUpdate.postExecution).not.toHaveBeenCalled();
-        expect(shouldNotUpdate.customfunction).not.toHaveBeenCalled();
-        done();
+      /**
+       * ## The CDF framework Dashboard Lifecycle # by default doesn't ping the server and show timeout notifications [BACKLOG-5131]
+       */
+      it("by default doesn't ping the server and show timeout notifications [BACKLOG-5131]", function() {
+        // default value
+        expect(dashboard.serverCheckResponseTimeout).toEqual(Infinity);
+        dashboard.init();
+        // during init the value of context.sessionTimeout is passed via the "cdf/dashboard/Dashboard" AMD module configuration (see context.js)
+        expect(dashboard.serverCheckResponseTimeout).toEqual(contextObj.sessionTimeout * 900); // 90% converted to milliseconds
       });
 
-      dashboard.update(shouldNotUpdate);
-      dashboard.update(shouldUpdate);
-    });
+      /**
+       * ## The CDF framework Dashboard Lifecycle # lets preExecution cancel updates
+       */
+      it("lets preExecution cancel updates", function(done) {
+        dashboard.init();
+        dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
 
-    /**
-     * ## The CDF framework Dashboard Lifecycle # triggers postInit when all components have finished rendering
-     */
-    it("triggers postInit when all components have finished rendering", function(done) {
-      dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
+        spyOn(shouldNotUpdate, "preExecution").and.callThrough();
+        spyOn(shouldNotUpdate, "customfunction").and.callThrough();
+        spyOn(shouldNotUpdate, "postExecution").and.callThrough();
 
-      spyOn(dashboard, "_handlePostInit").and.callThrough();
+        // listen to cdf:preExecution event
+        shouldUpdate.once("cdf:postExecution", function() {
+          expect(shouldNotUpdate.preExecution).toHaveBeenCalled();
+          expect(shouldNotUpdate.postExecution).not.toHaveBeenCalled();
+          expect(shouldNotUpdate.customfunction).not.toHaveBeenCalled();
+          done();
+        });
 
-      dashboard.waitingForInit = null;
-      dashboard.finishedInit = false;
-
-      // listen to cdf:postInit event
-      dashboard.once("cdf:postInit", function() {
-       expect(dashboard._handlePostInit).toHaveBeenCalled();
-       done();
+        dashboard.update(shouldNotUpdate);
+        dashboard.update(shouldUpdate);
       });
 
-      dashboard.init();
+      /**
+       * ## The CDF framework Dashboard Lifecycle # triggers postInit when all components have finished rendering
+       */
+      it("triggers postInit when all components have finished rendering", function(done) {
+        dashboard.addComponents([shouldUpdate, shouldNotUpdate]);
+
+        spyOn(dashboard, "_handlePostInit").and.callThrough();
+
+        dashboard.waitingForInit = null;
+        dashboard.finishedInit = false;
+
+        // listen to cdf:postInit event
+        dashboard.once("cdf:postInit", function() {
+          expect(dashboard._handlePostInit).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.init();
+      });
     });
 
     /**

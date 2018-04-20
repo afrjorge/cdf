@@ -1,3 +1,16 @@
+/*!
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
+ *
+ * This software was developed by Webdetails and is provided under the terms
+ * of the Mozilla Public License, Version 2.0, or any later version. You may not use
+ * this file except in compliance with the license. If you need a copy of the license,
+ * please go to http://mozilla.org/MPL/2.0/. The Initial Developer is Webdetails.
+ *
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. Please refer to
+ * the license for the specific language governing your rights and limitations.
+ */
+
 /*
  * Tests on the JS:
  * - name:
@@ -118,7 +131,7 @@ describe("Unmanaged Base Component #", function() {
         expect(basic.postExecution.calls.count()).toEqual(1);
         expect(basic.customfunction.calls.count()).toEqual(1);
         done();
-      }
+      };
 
       //Wait 100mms
       setTimeout(dataToValidate, 100);
@@ -138,7 +151,7 @@ describe("Unmanaged Base Component #", function() {
           expect(basic.postExecution).not.toHaveBeenCalled();
           expect(basic.customfunction).not.toHaveBeenCalled();
           done();
-      }
+      };
 
       //Wait 100mms
       setTimeout(dataToValidate, 100);
@@ -172,7 +185,7 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformQueryTemp.postFetch.calls.count()).toEqual(1);
         expect(freeformQueryTemp.customfunction.calls.count()).toEqual(1);
         done();
-      }
+      };
 
       //Wait 150mms
       setTimeout(dataToValidate, 150);
@@ -297,7 +310,7 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformQueryTemp.postExecution.calls.count()).toEqual(1);
         expect(freeformQueryTemp.unblock.calls.count()).toEqual(blockCount);
         done();
-      }
+      };
 
       setTimeout(dataToValidate,timeoutmms);
     });
@@ -358,7 +371,7 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformQuery.customfunction.calls.count()).toEqual(1);
         expect(freeformQuery.postExecution).not.toHaveBeenCalled();
         done();
-      }
+      };
 
       setTimeout(dataToValidate,timeoutmms);
     });
@@ -399,7 +412,7 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformAjax.unblock.calls.count()).toEqual(1);
         expect(freeformAjax.redraw.calls.count()).toEqual(1);
         done();
-      }
+      };
 
       setTimeout(dataToValidate,timeoutmms);
     });
@@ -436,7 +449,7 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformAjax.postExecution.calls.count()).toEqual(1);
         expect(freeformAjax.unblock.calls.count()).toEqual(blockCount);
         done();
-      }
+      };
 
       setTimeout(dataToValidate,timeoutmms);
     });
@@ -465,40 +478,41 @@ describe("Unmanaged Base Component #", function() {
         expect(freeformAjax.redraw).not.toHaveBeenCalled();
         expect(freeformAjax.postExecution).not.toHaveBeenCalled();
         done();
-      }
+      };
       setTimeout(dataToValidate,timeoutmms);
     });
   });
 
+  describe("postInit", function() {
+    /**
+     * ## Unmanaged Base Component # postInit # executes correctly
+     */
+    it("executes correctly", function(done) {
+      var expectedFlag = 0x7,
+          testFlag = 0;
+      spyOn(jQuery,"ajax").and.callFake(function(options){
+        setTimeout(function(){
+          options.success({resultset:[],metadata:[]});
+        },100);
+      });
 
-  /**
-   * ## Unmanaged Base Component # Plays nicely with postInit
-   */
-  it("Plays nicely with postInit", function(done) {
-    var expectedFlag = 0x7,
-        testFlag = 0;
-    spyOn(jQuery,"ajax").and.callFake(function(options){
       setTimeout(function(){
-        options.success({resultset:[],metadata:[]});
-      },100);
+        myDashboard.postInit = function() {
+          var i;
+          for(i = 0; i < componentList.length;i++) {
+            testFlag |= componentList[i].testFlag;
+          }
+        };
+        spyOn(myDashboard, "postInit").and.callThrough();
+        myDashboard.init();
+
+        setTimeout(function(){
+          expect(testFlag).toEqual(expectedFlag);
+          expect(myDashboard.postInit.calls.count()).toEqual(1);
+          done();
+        }, 500);
+      },10);
     });
-
-    setTimeout(function(){
-      myDashboard.postInit = function() {
-        var i;
-        for(i = 0; i < componentList.length;i++) {
-          testFlag |= componentList[i].testFlag;
-        }
-      };
-      spyOn(myDashboard, "postInit").and.callThrough();
-      myDashboard.init();
-
-      setTimeout(function(){
-        expect(testFlag).toEqual(expectedFlag);
-        expect(myDashboard.postInit.calls.count()).toEqual(1);
-        done();
-      }, 500);
-    },10);
   });
 
   /**

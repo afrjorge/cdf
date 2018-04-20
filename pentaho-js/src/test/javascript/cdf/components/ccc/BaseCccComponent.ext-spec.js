@@ -1,5 +1,5 @@
 /*!
- * Copyright 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2017 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -82,8 +82,6 @@ define([
         stacked: true,
         orientation: 'horizontal'
       })).toBe('barStackedHorizontal');
-
-
     });
 
     it("Gets the boolean describing if the Visualization is valid", function () {
@@ -114,11 +112,10 @@ define([
         expect(extension.definition).toBe('dummy');
         done();
       });
-    })
+    });
 
     it("Gets the correct colors", function () {
       expect(BaseCccComponentExt.getColors()[0]).toBe('dummy');
     });
   });
-
 });

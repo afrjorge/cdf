@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -104,32 +104,37 @@ define([
     //#end
 
     /**
-     * ## Freeform Component # plays nicely with postInit
+     * ## The Freeform Component # initialization
      */
-    it("plays nicely with postInit", function(done) {
-      var componentList = [basic, freeformQuery, freeformAjax];
+    describe("initialization", function() {
+      /**
+       * ## Freeform Component # initialization # plays nicely with postInit
+       */
+      it("plays nicely with postInit", function(done) {
+        var componentList = [basic, freeformQuery, freeformAjax];
 
-      dashboard.addComponents(componentList);
+        dashboard.addComponents(componentList);
 
-      var expectedFlag = 0x7,
-          testFlag = 0;
+        var expectedFlag = 0x7,
+            testFlag = 0;
 
-      dashboard.postInit = function() {
-        for(var i = 0; i < componentList.length; i++) {
-          testFlag |= componentList[i].testFlag;
-        }
+        dashboard.postInit = function() {
+          for(var i = 0; i < componentList.length; i++) {
+            testFlag |= componentList[i].testFlag;
+          }
 
-        expect(testFlag).toEqual(expectedFlag);
-        expect(dashboard.postInit.calls.count()).toEqual(1);
-        done();
-      };
+          expect(testFlag).toEqual(expectedFlag);
+          expect(dashboard.postInit.calls.count()).toEqual(1);
+          done();
+        };
 
-      spyOn(dashboard, "postInit").and.callThrough();
-      spyOn($, "ajax").and.callFake(function(params) {
-        params.success({resultset: [], metadata: []});
+        spyOn(dashboard, "postInit").and.callThrough();
+        spyOn($, "ajax").and.callFake(function(params) {
+          params.success({resultset: [], metadata: []});
+        });
+
+        dashboard.init();
       });
-
-      dashboard.init();
     });
 
     /**
@@ -143,7 +148,7 @@ define([
        * - beforeEach
        */
       beforeEach(function() {
-        dashboard.init()
+        dashboard.init();
         dashboard.addComponent(basic);
       });
       //#end
@@ -205,7 +210,7 @@ define([
        * - beforeEach
        */
       beforeEach(function() {
-        dashboard.init()
+        dashboard.init();
         freeformQuery = new FreeformComponent({
           name: "freeformQuery",
           type: "freeform",
@@ -398,7 +403,7 @@ define([
           expect(freeformQuery.redraw.calls.count()).toEqual(2);
           expect(freeformQuery.postExecution.calls.count()).toEqual(2);
           done();
-        }
+        };
         // listen to cdf:postExecution event
         freeformQuery.on("cdf:postExecution", callback);
 

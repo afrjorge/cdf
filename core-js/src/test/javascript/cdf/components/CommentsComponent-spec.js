@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -47,25 +47,30 @@ define([
     var callback = function() { return true; };
 
     /**
-     * ## The Comments Component # allows dashboards to execute updates
+     * ## The Comments Component # dashboard update
      */
-    it("allows dashboards to execute updates", function(done) {
-      spyOn(commentsComponent, 'update').and.callThrough();
-      spyOn(commentsComponentOperations, "requestProcessing").and.callThrough();
-      spyOn($, "ajax").and.callFake(function(params) {
-        params.success({
-          result: [],
-          status: "success"
+    describe("dashboard update", function() {
+      /**
+       * ## The Comments Component # allows dashboards to execute updates
+       */
+      it("allows dashboards to execute updates", function(done) {
+        spyOn(commentsComponent, 'update').and.callThrough();
+        spyOn(commentsComponentOperations, "requestProcessing").and.callThrough();
+        spyOn($, "ajax").and.callFake(function(params) {
+          params.success({
+            result: [],
+            status: "success"
+          });
         });
-      });
 
-      // listen to cdf:postExecution event
-      commentsComponent.once("cdf:postExecution", function() {
-        expect(commentsComponent.update).toHaveBeenCalled();
-        done();
-      });
+        // listen to cdf:postExecution event
+        commentsComponent.once("cdf:postExecution", function() {
+          expect(commentsComponent.update).toHaveBeenCalled();
+          done();
+        });
 
-      dashboard.update(commentsComponent);
+        dashboard.update(commentsComponent);
+      });
     });
 
     /**

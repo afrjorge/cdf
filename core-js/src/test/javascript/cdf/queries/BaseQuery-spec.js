@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -212,10 +212,10 @@ define([
         });
         var errorCallback = function () {
             return "i will not be back";
-        }
+        };
         var successCallback = function () {
             return "ill be back";
-        }
+        };
         baseQuery.fetchData(successCallback,errorCallback);
         expect(baseQuery._optionsManager._options.successCallback.value).toEqual(successCallback);
         expect(baseQuery._optionsManager._options.errorCallback.value).toEqual(errorCallback);

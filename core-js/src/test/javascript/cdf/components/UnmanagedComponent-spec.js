@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -123,8 +123,8 @@ define([
         htmlObject: 'uquery',
         executeAtStart: true,
         queryDefinition: queryDefinitionMock
-       });
-      };
+      });
+    }
 
     beforeEach(function() {
       dashboard = new Dashboard();
@@ -224,21 +224,21 @@ define([
       dashboard.update(uqueryWithParams);
     });
    
-   /**
-    * ## Unmanaged Component # should return one of the known query definition properties
-    */
+    /**
+     * ## Unmanaged Component # should return one of the known query definition properties
+     */
     it("should return one of the known query definition properties", function() {
       spyOn(uquery.dashboard, "isValidQueryDefinition").and.returnValue(true);
       var otherQDMock = {dataSource: "otherDatasource"};
       uquery.queryDefinition = otherQDMock;
       uquery.trafficDefinition = undefined;
       uquery.chartDefinition = undefined;
-      expect(uquery.getQueryDefinition()).toBe(otherQDMock)
+      expect(uquery.getQueryDefinition()).toBe(otherQDMock);
       uquery = renewUquery();
       uquery.chartDefinition = otherQDMock;
       uquery.queryDefinition = undefined;
       uquery.trafficDefinition = undefined;
-      expect(uquery.getQueryDefinition()).toBe(otherQDMock)
+      expect(uquery.getQueryDefinition()).toBe(otherQDMock);
       uquery = renewUquery();
       uquery.trafficDefinition = otherQDMock;
       uquery.queryDefinition = undefined;
@@ -325,23 +325,18 @@ define([
      });
 
     /**
-     * ## Unmanaged Component # getSuccessHandler
+     * ## Unmanaged Component # getSuccessHandler # returns a callback function that returns the processed data after calling postFetch on a successful data request
      */
-    describe("getSuccessHandler", function() {
-      /**
-       * ## Unmanaged Component # getSuccessHandler # returns a callback function that returns the processed data after calling postFetch on a successful data request
-       */
-      it("returns a callback function that returns the processed data after calling postFetch on a successful data request", function() {
-        var unprocessedData = {},
-            processedData = {data: [1, 2, 3]};
-        // set postFetch function that does the data transformation
-        uquery.postFetch = function(data) { return processedData; };
-        // set fake counter values to allow to proceed with the simulated successful execution
-        uquery.counter = 0;
-        uquery.runCounter = 0;
-        // test with a simulated successful data request
-        expect(uquery.getSuccessHandler(function success(){})(unprocessedData)).toEqual(processedData);
-      });
+    it("getSuccessHandler returns a callback function that returns the processed data after calling postFetch on a successful data request", function() {
+      var unprocessedData = {},
+          processedData = {data: [1, 2, 3]};
+      // set postFetch function that does the data transformation
+      uquery.postFetch = function(data) { return processedData; };
+      // set fake counter values to allow to proceed with the simulated successful execution
+      uquery.counter = 0;
+      uquery.runCounter = 0;
+      // test with a simulated successful data request
+      expect(uquery.getSuccessHandler(function success(){})(unprocessedData)).toEqual(processedData);
     });
   });
 });

@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -57,76 +57,91 @@ define([
     $("body").append($htmlContainer);
 
     /**
-     * ## The Multi Button Component # allows a dashboard to execute update
+     * ## The Multi Button Component # dashboard update
      */
-    it("allows a dashboard to execute update", function(done) {
-      spyOn(multiButtonComponent, 'update').and.callThrough();
-      spyOn($, "ajax").and.callFake(function() {
-        return {responseXML: "<test/>"};
-      });
+    describe("dashboard update", function() {
+      /**
+       * ## The Multi Button Component # dashboard update # allows a dashboard to execute update
+       */
+      it("allows a dashboard to execute update", function(done) {
+        spyOn(multiButtonComponent, 'update').and.callThrough();
+        spyOn($, "ajax").and.callFake(function() {
+          return {responseXML: "<test/>"};
+        });
 
-      // listen to cdf:postExecution event
-      multiButtonComponent.once("cdf:postExecution", function() {
-        expect(multiButtonComponent.update).toHaveBeenCalled();
-        done();
-      });
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(multiButtonComponent.update).toHaveBeenCalled();
+          done();
+        });
 
-      dashboard.update(multiButtonComponent);
-    });
-
-    /**
-     * ## The Multi Button Component # doesn't trigger postChange N times for N clicks on the same button
-     */
-    it("doesn't trigger postChange N times for N clicks on the same button", function(done) {
-      multiButtonComponent.clickButton(htmlObject, componentName, 1);
-      multiButtonComponent.clickButton(htmlObject, componentName, 2);
-      multiButtonComponent.clickButton(htmlObject, componentName, 0);
-      multiButtonComponent.clickButton(htmlObject, componentName, 0);
-      multiButtonComponent.clickButton(htmlObject, componentName, 0);
-      multiButtonComponent.clickButton(htmlObject, componentName, 0);
-      // sending the expect to the end of the call stack
-      _.defer(function() {
-        expect(multiButtonComponent.testCounter).toEqual(3);
-        done();
+        dashboard.update(multiButtonComponent);
       });
     });
 
     /**
-     * ## The Multi Button Component # behaves correctly using a parameter with a null
+     * ## The Multi Button Component # clickButton
      */
-    it("behaves correctly using a parameter with a null", function(done) {
-      dashboard.setParameter("region", null);
-      spyOn(multiButtonComponent, 'update').and.callThrough();
-      spyOn($, "ajax").and.callFake(function() {
-        return {responseXML: "<test/>"};
+    describe("clickButton", function() {
+      /**
+       * ## The Multi Button Component # clickButton # doesn't trigger postChange N times for N clicks on the same button
+       */
+      it("doesn't trigger postChange N times for N clicks on the same button", function(done) {
+        multiButtonComponent.clickButton(htmlObject, componentName, 1);
+        multiButtonComponent.clickButton(htmlObject, componentName, 2);
+        multiButtonComponent.clickButton(htmlObject, componentName, 0);
+        multiButtonComponent.clickButton(htmlObject, componentName, 0);
+        multiButtonComponent.clickButton(htmlObject, componentName, 0);
+        multiButtonComponent.clickButton(htmlObject, componentName, 0);
+        // sending the expect to the end of the call stack
+        _.defer(function() {
+          expect(multiButtonComponent.testCounter).toEqual(3);
+          done();
+        });
       });
-
-      // listen to cdf:postExecution event
-      multiButtonComponent.once("cdf:postExecution", function() {
-        expect(multiButtonComponent.update).toHaveBeenCalled();
-        done();
-      });
-
-      dashboard.update(multiButtonComponent);
     });
 
     /**
-     * ## The Multi Button Component # behaves correctly with parameter as undefined
+     * ## The Multi Button Component # behaviour
      */
-    it("behaves correctly with parameter as undefined", function(done) {
-      dashboard.setParameter("region", undefined);
-      spyOn(multiButtonComponent, 'update').and.callThrough();
-      spyOn($, "ajax").and.callFake(function() {
-        return {responseXML: "<test/>"};
+    describe("behaviour", function() {
+      /**
+       * ## The Multi Button Component # behaviour is correct using a parameter with a null
+       */
+      it("is correct using a parameter with a null", function(done) {
+        dashboard.setParameter("region", null);
+        spyOn(multiButtonComponent, 'update').and.callThrough();
+        spyOn($, "ajax").and.callFake(function() {
+          return {responseXML: "<test/>"};
+        });
+
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(multiButtonComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(multiButtonComponent);
       });
 
-      // listen to cdf:postExecution event
-      multiButtonComponent.once("cdf:postExecution", function() {
-        expect(multiButtonComponent.update).toHaveBeenCalled();
-        done();
-      });
+      /**
+       * ## The Multi Button Component # behaviour is correct with parameter as undefined
+       */
+      it("is correct correctly with parameter as undefined", function(done) {
+        dashboard.setParameter("region", undefined);
+        spyOn(multiButtonComponent, 'update').and.callThrough();
+        spyOn($, "ajax").and.callFake(function() {
+          return {responseXML: "<test/>"};
+        });
 
-      dashboard.update(multiButtonComponent);
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(multiButtonComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(multiButtonComponent);
+      });
     });
 
     /**
@@ -194,18 +209,20 @@ define([
         /**
          * ## The Multi Button Component # draw() function behaves correctly # with several elements in values array # with the current value equals to the first value
          */
-        it("with the current value equals to the first value", function(done) {
-          dashboard.setParameter("region", "b1");
+        describe("with the current value equals to the first value", function() {
+          it("fireChange does not execute", function(done) {
+            dashboard.setParameter("region", "b1");
 
-          spyOn(dashboard, 'fireChange');
+            spyOn(dashboard, 'fireChange');
 
-          // listen to cdf:postExecution event
-          multiButtonComponent.once("cdf:postExecution", function() {
-            expect(dashboard.fireChange).not.toHaveBeenCalled();
-            done();
+            // listen to cdf:postExecution event
+            multiButtonComponent.once("cdf:postExecution", function() {
+              expect(dashboard.fireChange).not.toHaveBeenCalled();
+              done();
+            });
+
+            dashboard.update(multiButtonComponent);
           });
-
-          dashboard.update(multiButtonComponent);
         });
 
         /**
@@ -251,19 +268,21 @@ define([
       /**
        * ## The Multi Button Component # draw() function behaves correctly # with no elements in values array
        */
-      it("with no elements in values array", function(done) {
-        multiButtonComponent.valuesArray = [];
-        dashboard.setParameter("region", undefined);
+      describe("with no elements in values array", function() {
+        it("fireChange doesn't execute", function(done) {
+          multiButtonComponent.valuesArray = [];
+          dashboard.setParameter("region", undefined);
 
-        spyOn(dashboard, 'fireChange');
+          spyOn(dashboard, 'fireChange');
 
-        // listen to cdf:postExecution event
-        multiButtonComponent.once("cdf:postExecution", function() {
-          expect(dashboard.fireChange).not.toHaveBeenCalled();
-          done();
+          // listen to cdf:postExecution event
+          multiButtonComponent.once("cdf:postExecution", function() {
+            expect(dashboard.fireChange).not.toHaveBeenCalled();
+            done();
+          });
+
+          dashboard.update(multiButtonComponent);
         });
-
-        dashboard.update(multiButtonComponent);
       });
     });
   });

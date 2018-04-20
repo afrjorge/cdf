@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -119,95 +119,106 @@ define([
     });
 
     /**
-     * ## The Filter Component # allows a dashboard to execute update
+     * ## The Filter Component # dashboard update
      */
-    it("allows a dashboard to execute update", function(done) {
-      dashboard.addComponent(filterComponent);
+    describe("dashboard update", function() {
+      it("allows a dashboard to execute update", function(done) {
+        dashboard.addComponent(filterComponent);
 
-      spyOn(filterComponent, 'update').and.callThrough();
+        spyOn(filterComponent, 'update').and.callThrough();
 
-      // listen to cdf:postExecution event
-      filterComponent.once("cdf:postExecution", function() {
-        expect(filterComponent.update).toHaveBeenCalled();
-        done();
+        // listen to cdf:postExecution event
+        filterComponent.once("cdf:postExecution", function() {
+          expect(filterComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(filterComponent);
       });
-
-      dashboard.update(filterComponent);
     });
 
-    it('disables the "only" button when using the SingleSelect strategy', function() {
-      expect(filterComponent.getConfiguration().component.selectionStrategy.type).toEqual("SingleSelect");
-      expect(filterComponent.getConfiguration().component.Root.options.showButtonOnlyThis).toEqual(false);
-      expect(filterComponent.getConfiguration().component.Group.options.showButtonOnlyThis).toEqual(false);
-      expect(filterComponent.getConfiguration().component.Item.options.showButtonOnlyThis).toEqual(false);
+    /**
+     * ## The Filter Component # SingleSelect
+     */
+    describe("SingleSelect", function() {
+      it('disables the "only" button when using the SingleSelect strategy', function() {
+        expect(filterComponent.getConfiguration().component.selectionStrategy.type).toEqual("SingleSelect");
+        expect(filterComponent.getConfiguration().component.Root.options.showButtonOnlyThis).toEqual(false);
+        expect(filterComponent.getConfiguration().component.Group.options.showButtonOnlyThis).toEqual(false);
+        expect(filterComponent.getConfiguration().component.Item.options.showButtonOnlyThis).toEqual(false);
+      });
     });
 
-    it("sanitizes values and labels", function(done) {
-      dashboard.addDataSource("sanitizationDatasource", {
-        dataAccessId: "testId",
-        path: "/test.cda"
-      });
-      var modelData = [["One", "Label", "Value"],
-        ["Two", "<script>Label</script>", "<script>Value</script>"],
-        ["Three", "<b>Label</b>", "<b>Value</b>"],
-        ["Four", "<b><script>Label</script></b>", "<b><script>Value</script></b>"],
-        ["Five", "<b><iframe>Label</iframe></b>", "<b><iframe>Value</iframe></b>"],
-        ["Six", "<b><html>Label</html></b>", "<b><html>Value</html></b>"],
-        ["Seven", "<b><body>Label</body></b>", "<b><body>Value</body></b>"],
-        ["Eight", "<b><iframe>Label</iframe></b><b><script>Label</script></b>", "<b><html>Value</html></b>"]
-		];
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(getCdaJson(modelData,
-          [{colIndex: 0, colType: "String", colName: "id"},
-            {colIndex: 1, colType: "String", colName: "name"},
-            {colIndex: 2, colType: "String", colName: "value"}]));
-      });
+    /**
+     * ## The Filter Component # sanitizes
+     */
+    describe("sanitizes", function() {
+      it("values and labels", function(done) {
+        dashboard.addDataSource("sanitizationDatasource", {
+          dataAccessId: "testId",
+          path: "/test.cda"
+        });
+        var modelData = [["One", "Label", "Value"],
+          ["Two", "<script>Label</script>", "<script>Value</script>"],
+          ["Three", "<b>Label</b>", "<b>Value</b>"],
+          ["Four", "<b><script>Label</script></b>", "<b><script>Value</script></b>"],
+          ["Five", "<b><iframe>Label</iframe></b>", "<b><iframe>Value</iframe></b>"],
+          ["Six", "<b><html>Label</html></b>", "<b><html>Value</html></b>"],
+          ["Seven", "<b><body>Label</body></b>", "<b><body>Value</body></b>"],
+          ["Eight", "<b><iframe>Label</iframe></b><b><script>Label</script></b>", "<b><html>Value</html></b>"]
+        ];
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(getCdaJson(modelData,
+            [{colIndex: 0, colType: "String", colName: "id"},
+              {colIndex: 1, colType: "String", colName: "name"},
+              {colIndex: 2, colType: "String", colName: "value"}]));
+        });
 
-      var filterComponent = getNewFilterComponent({
-        queryDefinition: {dataSource: "sanitizationDatasource"},
-        componentInput: {valuesArray: []},
-        options: function() {
-          return {
-            component: {
-              search: {serverSide: true},
-              Root: {view: {scrollbar: {engine: "fake_engine"}}}
-            },
-            input: {
-              indexes: {
-                id: 0,
-                label: 1,
-                value: 2
+        var filterComponent = getNewFilterComponent({
+          queryDefinition: {dataSource: "sanitizationDatasource"},
+          componentInput: {valuesArray: []},
+          options: function() {
+            return {
+              component: {
+                search: {serverSide: true},
+                Root: {view: {scrollbar: {engine: "fake_engine"}}}
+              },
+              input: {
+                indexes: {
+                  id: 0,
+                  label: 1,
+                  value: 2
+                }
               }
-            }
-          };
-        }
+            };
+          }
+        });
+
+        dashboard.addComponent(filterComponent);
+
+        var evaluateExpectations = function(models, override) {
+          for (var i = 0; i < models.length; i++) {
+            var data = override[i] || modelData[i];
+            expect(models[i].get("label")).toEqual(data[1]);
+            expect(models[i].get("value")).toEqual(data[2]);
+          }
+        };
+
+        filterComponent.once("getData:success", function() {
+          var childrenModels = filterComponent.model.children().models;
+          var override = [];
+          override[1] = ["", "", ""];
+          override[3] = ["", "<b></b>", "<b></b>"];
+          override[4] = ["", "<b></b>", "<b></b>"];
+          override[5] = ["", "<b>Label</b>", "<b>Value</b>"];
+          override[6] = ["", "<b>Label</b>", "<b>Value</b>"];
+          override[7] = ["", "<b></b><b></b>", "<b>Value</b>"];
+          evaluateExpectations(childrenModels, override);
+          done();
+        });
+
+        dashboard.update(filterComponent);
       });
-
-      dashboard.addComponent(filterComponent);
-
-      var evaluateExpectations = function(models, override) {
-        for (var i = 0; i < models.length; i++) {
-          var data = override[i] || modelData[i];
-          expect(models[i].get("label")).toEqual(data[1]);
-          expect(models[i].get("value")).toEqual(data[2]);
-        }
-      };
-
-      filterComponent.once("getData:success", function() {
-        filterComponent.dashboard.parameter;
-        var childrenModels = filterComponent.model.children().models;
-        var override = [];
-        override[1] = ["", "", ""];
-        override[3] = ["", "<b></b>", "<b></b>"];
-        override[4] = ["", "<b></b>", "<b></b>"];
-        override[5] = ["", "<b>Label</b>", "<b>Value</b>"];
-        override[6] = ["", "<b>Label</b>", "<b>Value</b>"];
-        override[7] = ["", "<b></b><b></b>", "<b>Value</b>"];
-        evaluateExpectations(childrenModels, override);
-        done();
-      });
-
-      dashboard.update(filterComponent);
     });
 
     describe("InputDataHandler #", function() {
@@ -220,79 +231,77 @@ define([
         dashboard.update(filterComponent);
       });
 
-      describe("when using an augmented valuesArray", function() {
-        it("sets the correct group parent", function(done) {
-          var filterComponent = getNewFilterComponent({
-            componentInput: {
-              valuesArray: [
-                ['[0]', 'Zero', '[<10]', 'Below 10'],
-                ['[1]', 'One', '[<10]', 'Below 10'],
-                ['[11]', 'Eleven', '[>10]', 'Above 10']
-              ]
-            },
-            options: function() {
-              return {
-                component: {
-                  Root: {view: {scrollbar: {engine: "fake_engine"}}}
-                },
-                input: {
-                  indexes: {
-                    id: 0,
-                    label: 1,
-                    parentId: 2,
-                    parentLabel: 3,
-                    value: 4
-                  }
+      it("using an augmented valuesArray sets the correct group parent", function(done) {
+        var filterComponent = getNewFilterComponent({
+          componentInput: {
+            valuesArray: [
+              ['[0]', 'Zero', '[<10]', 'Below 10'],
+              ['[1]', 'One', '[<10]', 'Below 10'],
+              ['[11]', 'Eleven', '[>10]', 'Above 10']
+            ]
+          },
+          options: function() {
+            return {
+              component: {
+                Root: {view: {scrollbar: {engine: "fake_engine"}}}
+              },
+              input: {
+                indexes: {
+                  id: 0,
+                  label: 1,
+                  parentId: 2,
+                  parentLabel: 3,
+                  value: 4
                 }
-              };
-            }
-          });
-          dashboard.addComponent(filterComponent);
-          filterComponent.once("cdf:postExecution", function() {
-            expect(filterComponent.model.find('[0]').parent().get('id')).toBe('[<10]');
-            expect(filterComponent.model.find('[1]').parent().get('id')).toBe('[<10]');
-            expect(filterComponent.model.find('[11]').parent().get('id')).toBe('[>10]');
-            expect(filterComponent.model.find('[<10]').parent().isRoot()).toBe(true);
-            expect(filterComponent.model.find('[>10]').parent().isRoot()).toBe(true);
-            done();
-          });
-          dashboard.update(filterComponent);
+              }
+            };
+          }
         });
-        it("processes the 'value'", function(done) {
-          var filterComponent = getNewFilterComponent({
-            componentInput: {
-              valuesArray: [
-                ['[0]', 'Zero', '[<10]', 'Below 10', 0],
-                ['[1]', 'One', '[<10]', 'Below 10', 1],
-                ['[11]', 'Eleven', '[>10]', 'Above 10', 11]
-              ]
-            },
-            options: function() {
-              return {
-                component: {
-                  Root: {view: {scrollbar: {engine: "fake_engine"}}}
-                },
-                input: {
-                  indexes: {
-                    id: 0,
-                    label: 1,
-                    parentId: 2,
-                    parentLabel: 3,
-                    value: 4
-                  }
+        dashboard.addComponent(filterComponent);
+        filterComponent.once("cdf:postExecution", function() {
+          expect(filterComponent.model.find('[0]').parent().get('id')).toBe('[<10]');
+          expect(filterComponent.model.find('[1]').parent().get('id')).toBe('[<10]');
+          expect(filterComponent.model.find('[11]').parent().get('id')).toBe('[>10]');
+          expect(filterComponent.model.find('[<10]').parent().isRoot()).toBe(true);
+          expect(filterComponent.model.find('[>10]').parent().isRoot()).toBe(true);
+          done();
+        });
+        dashboard.update(filterComponent);
+      });
+      it("using an augmented valuesArray processes the 'value'", function(done) {
+        var filterComponent = getNewFilterComponent({
+          componentInput: {
+            valuesArray: [
+              ['[0]', 'Zero', '[<10]', 'Below 10', 0],
+              ['[1]', 'One', '[<10]', 'Below 10', 1],
+              ['[11]', 'Eleven', '[>10]', 'Above 10', 11]
+            ]
+          },
+          options: function() {
+            return {
+              component: {
+                Root: {view: {scrollbar: {engine: "fake_engine"}}}
+              },
+              input: {
+                indexes: {
+                  id: 0,
+                  label: 1,
+                  parentId: 2,
+                  parentLabel: 3,
+                  value: 4
                 }
-              };
-            }
-          });
-          dashboard.addComponent(filterComponent);
-          filterComponent.once("cdf:postExecution", function() {
-            expect(filterComponent.model.find('[0]').get('value')).toBe(0);
-            expect(filterComponent.model.find('[1]').get('value')).toBe(1);
-            expect(filterComponent.model.find('[11]').get('value')).toBe(11);
-            done();
-          });
-          dashboard.update(filterComponent);
+              }
+            };
+          }
         });
+        dashboard.addComponent(filterComponent);
+        filterComponent.once("cdf:postExecution", function() {
+          expect(filterComponent.model.find('[0]').get('value')).toBe(0);
+          expect(filterComponent.model.find('[1]').get('value')).toBe(1);
+          expect(filterComponent.model.find('[11]').get('value')).toBe(11);
+          done();
+        });
+        dashboard.update(filterComponent);
       });
     });
 
@@ -765,6 +774,5 @@ define([
         dashboard.update(filterComponent);
       });
     });
-
   });
 });

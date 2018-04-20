@@ -1,3 +1,16 @@
+/*!
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
+ *
+ * This software was developed by Webdetails and is provided under the terms
+ * of the Mozilla Public License, Version 2.0, or any later version. You may not use
+ * this file except in compliance with the license. If you need a copy of the license,
+ * please go to http://mozilla.org/MPL/2.0/. The Initial Developer is Webdetails.
+ *
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. Please refer to
+ * the license for the specific language governing your rights and limitations.
+ */
+
 /**
  * ## The Select Component
  */
@@ -30,39 +43,44 @@ describe("The Select Component #", function() {
   myDashboard.addComponents(components);
 
   /**
-   * ## The Select Component # Draws the options
+   * ## The Select Component # The externalPlugin
    */
-  it("Draws the options", function(done) {
-    spyOn(selectComponent, 'update');
-    myDashboard.update(selectComponent);
-    setTimeout(function(){
-      expect(selectComponent.update).toHaveBeenCalled();
-      done();
-    }, 100);
-  });
-  /**
-   * ## The Select Component # Holds the correct value
-   */
-  it("Holds the correct value", function() {
-    var comp = myDashboard.getComponentByName("selectComponent");
-    expect(myDashboard.getParameterValue(comp.parameter)).toEqual(1);
-  });
-  /**
-   * ## The Select Component # Allows overriding AJAX settings
-   */
-  it("Allows overriding AJAX settings", function() {
-    var ajax = spyOn(jQuery,"ajax");
-
-    var query = new Query({dataAccessId: "foo", path:"bar"});
-    query.setAjaxOptions({
-      type: "GET",
-      async: true
+  describe("core behaviour", function () {
+    /**
+     * ## The Select Component # Draws the options
+     */
+    it("Draws the options", function(done) {
+      spyOn(selectComponent, 'update');
+      myDashboard.update(selectComponent);
+      setTimeout(function(){
+        expect(selectComponent.update).toHaveBeenCalled();
+        done();
+      }, 100);
     });
-    query.fetchData({},function(){});
-    var settings = ajax.calls.mostRecent().args[0];
+    /**
+     * ## The Select Component # Holds the correct value
+     */
+    it("Holds the correct value", function() {
+      var comp = myDashboard.getComponentByName("selectComponent");
+      expect(myDashboard.getParameterValue(comp.parameter)).toEqual(1);
+    });
+    /**
+     * ## The Select Component # Allows overriding AJAX settings
+     */
+    it("Allows overriding AJAX settings", function() {
+      var ajax = spyOn(jQuery,"ajax");
 
-    expect(settings.type).toEqual("GET");
-    expect(settings.async).toBeTruthy();
+      var query = new Query({dataAccessId: "foo", path:"bar"});
+      query.setAjaxOptions({
+        type: "GET",
+        async: true
+      });
+      query.fetchData({},function(){});
+      var settings = ajax.calls.mostRecent().args[0];
+
+      expect(settings.type).toEqual("GET");
+      expect(settings.async).toBeTruthy();
+    });
   });
 
   /**
@@ -90,9 +108,9 @@ describe("The Select Component #", function() {
       ["label4", "value4"]
     ];
     var dataInPlaceholder = "<option value = 'label1' >value1</option>"
-    + "<option value = 'label2' >value2</option>"
-    + "<option value = 'label3' >value3</option>"
-    + "<option value = 'label4' >value4</option>";
+      + "<option value = 'label2' >value2</option>"
+      + "<option value = 'label3' >value3</option>"
+      + "<option value = 'label4' >value4</option>";
     var mySelectPlaceHolder = {
       html: function (param) {
         mySelect.valuesTest = param.substring(param.indexOf("<option"), param.indexOf("</select>"));
@@ -190,9 +208,5 @@ describe("The Select Component #", function() {
     var hyndsSelect = makeSelect("mySelect", "hynds");
     myDashboard.addComponent(hyndsSelect);
     mockDraw("hynds");
-
   });
-
-
 });
-

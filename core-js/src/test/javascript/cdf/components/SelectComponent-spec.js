@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -44,42 +44,52 @@ define([
     });
   
     dashboard.addComponent(selectComponent);
-  
-    /**
-     * ## The Select Component # allows a dashboard to execute update
-     */
-    it("allows a dashboard to execute update", function(done) {
-      spyOn(selectComponent, 'update').and.callThrough();
 
-      // listen to cdf:postExecution event
-      selectComponent.once("cdf:postExecution", function() {
-        expect(selectComponent.update).toHaveBeenCalled();
-        done();
+    /**
+     * ## The Select Component # update
+     */
+    describe("update", function() {
+      /**
+       * ## The Select Component # update # allows a dashboard to execute update
+       */
+      it("allows a dashboard to execute update", function(done) {
+        spyOn(selectComponent, 'update').and.callThrough();
+
+        // listen to cdf:postExecution event
+        selectComponent.once("cdf:postExecution", function() {
+          expect(selectComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(selectComponent);
       });
 
-      dashboard.update(selectComponent);
+      /**
+       * ## The Select Component # has a string parameter
+       */
+      it("has a string parameter", function() {
+        expect(dashboard.getParameterValue(selectComponent.parameter)).toEqual("1");
+      });
     });
 
     /**
-     * ## The Select Component # has a string parameter
+     * ## The Select Component # postChange
      */
-    it("has a string parameter", function() {
-      expect(dashboard.getParameterValue(selectComponent.parameter)).toEqual("1");
-    });
+    describe("postChange", function() {
+      /**
+       * ## The Select Component # postChange # executes correctly
+       */
+      it("executes correctly", function() {
+        spyOn(selectComponent, 'postChange').and.callThrough();
 
-    /**
-     * ## The Select Component # allows executing a postChange function
-     */
-    it("allows executing a postChange function", function() {
-      spyOn(selectComponent, 'postChange').and.callThrough();
+        // listen to selectComponentParameter:fireChange event
+        selectComponent.once(selectComponent.parameter + ":fireChange", function() {
+          expect(selectComponent.postChange).toHaveBeenCalled();
+          done();
+        });
 
-      // listen to selectComponentParameter:fireChange event
-      selectComponent.once(selectComponent.parameter + ":fireChange", function() {
-        expect(selectComponent.postChange).toHaveBeenCalled();
-        done();
+        dashboard.processChange(selectComponent.name);
       });
-
-      dashboard.processChange(selectComponent.name);
     });
   
     /**

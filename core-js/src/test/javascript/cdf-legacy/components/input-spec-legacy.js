@@ -1,3 +1,16 @@
+/*!
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
+ *
+ * This software was developed by Webdetails and is provided under the terms
+ * of the Mozilla Public License, Version 2.0, or any later version. You may not use
+ * this file except in compliance with the license. If you need a copy of the license,
+ * please go to http://mozilla.org/MPL/2.0/. The Initial Developer is Webdetails.
+ *
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. Please refer to
+ * the license for the specific language governing your rights and limitations.
+ */
+
 /**
  * ## The Autocomplete Component
  */
@@ -202,11 +215,10 @@ describe("The DateInput Component #", function() {
   });
 });
 
-
 /**
  * ## The Radio Component
  */
-describe("The Radio Component #", function(){
+describe("The Radio Component #", function() {
   var myDashboard = _.extend({}, Dashboards);
   myDashboard.addParameter('region', "");
 
@@ -282,13 +294,12 @@ describe("The Radio Component #", function(){
 
     myDashboard.update(radioComponent);
   });
-
 });
 
 /**
  * ## The Checkbox Component
  */
-describe("The Checkbox Component #", function(){
+describe("The Checkbox Component #", function() {
   var myDashboard = _.extend({}, Dashboards);
   myDashboard.addParameter('region', "");
 
@@ -368,7 +379,7 @@ describe("The Checkbox Component #", function(){
 /**
  * ## The Checkbox Component
  */
-describe("The Multibutton Component #", function(){
+describe("The Multibutton Component #", function() {
 
   var dashboard = _.extend({}, Dashboards);
   var htmlObject = "sampleMultiButtonComponentObject";
@@ -488,62 +499,61 @@ describe("The Multibutton Component #", function(){
       });
 
       /**
-       * ## The Multi Button Component # draw() function behaves correctly # with several elements in values array # with the current value does not equal to the first value
+       * ## The Multi Button Component # draw() function behaves correctly # with the current value does not equal to the first value and is present in values array
        */
-      describe("with the current value does not equal to the first value", function() {
-        /**
-         * ## The Multi Button Component # draw() function behaves correctly # with several elements in values array # with the current value does not equal to the first value # with the current value is present in values array
-         */
-        it("with the current value is present in values array", function(done) {
-          dashboard.setParameter("region", "b2");
+      it("with the current value does not equal to the first value and is present in values array", function(done) {
+        dashboard.setParameter("region", "b2");
 
-          spyOn(Dashboards, 'fireChange');
+        spyOn(Dashboards, 'fireChange');
 
-          // listen to cdf:postExecution event
-          multiButtonComponent.once("cdf:postExecution", function() {
-            expect(Dashboards.fireChange).not.toHaveBeenCalled();
-            done();
-          });
-
-          dashboard.update(multiButtonComponent);
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(Dashboards.fireChange).not.toHaveBeenCalled();
+          done();
         });
 
-        /**
-         * ## The Multi Button Component # draw() function behaves correctly # with several elements in values array # with the current value does not equal to the first value # with the current value is not present in values array
-         */
-        it("with the current value is not present in values array", function(done) {
-          dashboard.setParameter("region", "b4");
+        dashboard.update(multiButtonComponent);
+      });
 
-          spyOn(Dashboards, 'fireChange');
+      /**
+       * ## The Multi Button Component # draw() function behaves correctly # with the current value does not equal to the first value and is not present in values array
+       */
+      it("with the current value does not equal to the first value and is not present in values array", function(done) {
+        dashboard.setParameter("region", "b4");
 
-          // listen to cdf:postExecution event
-          multiButtonComponent.once("cdf:postExecution", function() {
-            expect(Dashboards.fireChange).not.toHaveBeenCalled();
-            done();
-          });
+        spyOn(Dashboards, 'fireChange');
 
-          dashboard.update(multiButtonComponent);
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(Dashboards.fireChange).not.toHaveBeenCalled();
+          done();
         });
+
+        dashboard.update(multiButtonComponent);
       });
     });
 
     /**
      * ## The Multi Button Component # draw() function behaves correctly # with no elements in values array
      */
-    it("with no elements in values array", function(done) {
-      multiButtonComponent.valuesArray = [];
-      dashboard.setParameter("region", undefined);
+    describe("with no elements in values array #", function() {
+      /**
+       * ## The Multi Button Component # draw() function behaves correctly # with no elements in values array
+       */
+      it("doesn't execute fireChange", function(done) {
+        multiButtonComponent.valuesArray = [];
+        dashboard.setParameter("region", undefined);
 
-      spyOn(Dashboards, 'fireChange');
+        spyOn(Dashboards, 'fireChange');
 
-      // listen to cdf:postExecution event
-      multiButtonComponent.once("cdf:postExecution", function() {
-        expect(Dashboards.fireChange).not.toHaveBeenCalled();
-        done();
+        // listen to cdf:postExecution event
+        multiButtonComponent.once("cdf:postExecution", function() {
+          expect(Dashboards.fireChange).not.toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(multiButtonComponent);
       });
-
-      dashboard.update(multiButtonComponent);
     });
   });
-
 });

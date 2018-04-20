@@ -1,3 +1,16 @@
+/*!
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
+ *
+ * This software was developed by Webdetails and is provided under the terms
+ * of the Mozilla Public License, Version 2.0, or any later version. You may not use
+ * this file except in compliance with the license. If you need a copy of the license,
+ * please go to http://mozilla.org/MPL/2.0/. The Initial Developer is Webdetails.
+ *
+ * Software distributed under the Mozilla Public License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. Please refer to
+ * the license for the specific language governing your rights and limitations.
+ */
+
 /**
  * ## The CDF framework
  */
@@ -50,52 +63,55 @@ describe("The CDF framework #", function() {
   /************************
    * Test Core Lifecycle  *
    ************************/
-  /**
-   * ## The CDF framework # Updates Components
-   */
-  it("Updates Components",function(done) {
-    spyOn(shouldUpdate,"preExecution").and.callThrough();
-    spyOn(shouldUpdate,"customfunction").and.callThrough();
-    spyOn(shouldUpdate,"postExecution").and.callThrough();
+  describe("core", function() {
+    /**
+     * ## The CDF framework # Updates Components
+     */
+    it("Updates Components",function(done) {
+      spyOn(shouldUpdate,"preExecution").and.callThrough();
+      spyOn(shouldUpdate,"customfunction").and.callThrough();
+      spyOn(shouldUpdate,"postExecution").and.callThrough();
 
-    //Update
-    myDashboard.update(shouldUpdate);
+      //Update
+      myDashboard.update(shouldUpdate);
 
-    //Data to validate
-    var dataToValidate = function(){
-      expect(shouldUpdate.preExecution).toHaveBeenCalled();
-      expect(shouldUpdate.postExecution).toHaveBeenCalled();
-      expect(shouldUpdate.customfunction).toHaveBeenCalled();
-      done();
-    }
+      //Data to validate
+      var dataToValidate = function(){
+        expect(shouldUpdate.preExecution).toHaveBeenCalled();
+        expect(shouldUpdate.postExecution).toHaveBeenCalled();
+        expect(shouldUpdate.customfunction).toHaveBeenCalled();
+        done();
+      };
 
-    setTimeout(dataToValidate, 100);
+      setTimeout(dataToValidate, 100);
+    });
+    /**
+     * ## The CDF framework # Lets preExecution cancel updates
+     */
+    it("Lets preExecution cancel updates",function(done) {
+      spyOn(shouldNotUpdate,"preExecution").and.callThrough();
+      spyOn(shouldNotUpdate,"customfunction").and.callThrough();
+      spyOn(shouldNotUpdate,"postExecution").and.callThrough();
+
+      //Update
+      myDashboard.update(shouldNotUpdate);
+
+      //Data to validate
+      var dataToValidate = function(){
+        expect(shouldNotUpdate.preExecution).toHaveBeenCalled();
+        expect(shouldNotUpdate.postExecution).not.toHaveBeenCalled();
+        expect(shouldNotUpdate.customfunction).not.toHaveBeenCalled();
+        done();
+      };
+
+      setTimeout(dataToValidate, 100);
+    });
   });
-  /**
-   * ## The CDF framework # Lets preExecution cancel updates
-   */
-  it("Lets preExecution cancel updates",function(done) {
-    spyOn(shouldNotUpdate,"preExecution").and.callThrough();
-    spyOn(shouldNotUpdate,"customfunction").and.callThrough();
-    spyOn(shouldNotUpdate,"postExecution").and.callThrough();
 
-    //Update
-    myDashboard.update(shouldNotUpdate);
-
-    //Data to validate
-    var dataToValidate = function(){
-      expect(shouldNotUpdate.preExecution).toHaveBeenCalled();
-      expect(shouldNotUpdate.postExecution).not.toHaveBeenCalled();
-      expect(shouldNotUpdate.customfunction).not.toHaveBeenCalled();
-      done();
-    }
-
-    setTimeout(dataToValidate, 100);
-  });
   /**
    * ## The CDF framework # getComponentName
    */
-  describe("getComponentName", function(){
+  describe("getComponentName", function() {
     /**
      * ## The CDF framework # getComponentName returns a string with the component's name when the component is provided
      */
@@ -133,10 +149,11 @@ describe("The CDF framework #", function() {
       expect(myDashboard.getComponentName(tmp)).toEqual(undefined);
     });
   });
+
   /**
    * ## The CDF framework # getComponent
    */
-  describe("getComponent", function(){
+  describe("getComponent", function() {
     /**
      * ## The CDF framework # getComponent returns undefined if no component is found
      */
@@ -171,10 +188,11 @@ describe("The CDF framework #", function() {
       expect(myDashboard.getComponent(tmp)).toEqual(undefined);
     });
   });
+
   /**
    * ## The CDF framework # getComponentIndex
    */
-  describe("getComponentIndex", function(){
+  describe("getComponentIndex", function() {
     /**
      * ## The CDF framework # getComponentIndex returns -1 if a string is provided with a name of an unexisting component
      */
@@ -203,10 +221,11 @@ describe("The CDF framework #", function() {
       expect(myDashboard.getComponentIndex(tmp.name)).toEqual(1);
     });
   });
+
   /**
    * ## The CDF framework # getComponentByName
    */
-  describe("getComponentByName", function(){
+  describe("getComponentByName", function() {
     /**
      * ## The CDF framework # getComponentByName returns undefined if null is provided
      */
@@ -249,10 +268,11 @@ describe("The CDF framework #", function() {
       window[shouldUpdate.name] = tmp2;
     });
   });
+
   /**
    * ## The CDF framework # addComponent
    */
-  describe("addComponent", function(){
+  describe("addComponent", function() {
     /**
      * ## The CDF framework # addComponent replaces components when adding components with duplicate names
      */
@@ -284,10 +304,11 @@ describe("The CDF framework #", function() {
       myDashboard.addComponent(shouldUpdate);
     });
   });
+
   /**
    * ## The CDF framework # removeComponent
    */
-  describe("removeComponent", function(){
+  describe("removeComponent", function() {
     /**
      * ## The CDF framework # removeComponent returns undefined when removing a component that doesn't exist
      */
@@ -348,286 +369,289 @@ describe("The CDF framework #", function() {
       expect(myDashboard.components[myDashboard.getComponentIndex(shouldUpdate.name)]).toEqual(undefined);
       myDashboard.globalContext = globalContext_;
     });
-
   });
+
   /**************************************
    * Test Parameter setting and syncing *
    **************************************/
-  /**
-   * ## The CDF framework # Adds parameters
-   */
-  /**
-   * Auxiliary function to verify if a parameter has the expected value
-   *
-   * @param paramName
-   * @param value
-   */
-  var testSimpleParameter = function(paramName, value){
-    expect(myDashboard.getParameterValue(paramName)).toEqual(value);
-  };
-  /**
-   * Auxiliary function to verify if a parameter is a function, its return value and body are as expected
-   *
-   * @param parameterName
-   * @param func
-   * @param funcToString
-   * @param returnValue
-   */
-  var testFunctionParameter = function(parameterName, func, funcToString, returnValue) {
-    expect(myDashboard.getParameterValue(parameterName) instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue(parameterName)()).toBe(returnValue);
-    expect(myDashboard.getParameterValue(parameterName).toString()).toEqual(funcToString);
-  };
-
-  it("Adds parameters", function() {
+  describe("parametrization", function() {
     /**
-     * Tests the addParameter call. The second value will never be assigned because the parameter is already defined
+     * ## The CDF framework # Adds parameters
+     */
+    /**
+     * Auxiliary function to verify if a parameter has the expected value
      *
      * @param paramName
-     * @param firstValue
-     * @param secondValue
+     * @param value
      */
-    var testSimpleAddParameter = function(paramName, firstValue, secondValue){
-      myDashboard.addParameter(paramName,firstValue);
-      testSimpleParameter(paramName, firstValue);
-      myDashboard.addParameter(paramName,secondValue);
-      testSimpleParameter(paramName, firstValue);
+    var testSimpleParameter = function(paramName, value){
+      expect(myDashboard.getParameterValue(paramName)).toEqual(value);
     };
     /**
-     * Tests a function parameter, if its body and return value are the same
+     * Auxiliary function to verify if a parameter is a function, its return value and body are as expected
      *
      * @param parameterName
      * @param func
      * @param funcToString
      * @param returnValue
      */
-    var testFunctionAddParameter = function(parameterName, func, funcToString, returnValue){
-      myDashboard.addParameter(parameterName, func);
-      testFunctionParameter(parameterName, func, funcToString, returnValue);
+    var testFunctionParameter = function(parameterName, func, funcToString, returnValue) {
+      expect(myDashboard.getParameterValue(parameterName) instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue(parameterName)()).toBe(returnValue);
+      expect(myDashboard.getParameterValue(parameterName).toString()).toEqual(funcToString);
     };
 
-    testSimpleAddParameter("numberParam", 1, 2);
-    testSimpleAddParameter("stringParam", "test", "testtest");
-    testSimpleAddParameter("booleanParam", true, false);
-    testSimpleAddParameter("nullParam", null, "test");
-    testSimpleAddParameter("arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleAddParameter("objectParam1", {a: 1, b: 2}, {});
+    it("Adds parameters", function() {
+      /**
+       * Tests the addParameter call. The second value will never be assigned because the parameter is already defined
+       *
+       * @param paramName
+       * @param firstValue
+       * @param secondValue
+       */
+      var testSimpleAddParameter = function(paramName, firstValue, secondValue){
+        myDashboard.addParameter(paramName,firstValue);
+        testSimpleParameter(paramName, firstValue);
+        myDashboard.addParameter(paramName,secondValue);
+        testSimpleParameter(paramName, firstValue);
+      };
+      /**
+       * Tests a function parameter, if its body and return value are the same
+       *
+       * @param parameterName
+       * @param func
+       * @param funcToString
+       * @param returnValue
+       */
+      var testFunctionAddParameter = function(parameterName, func, funcToString, returnValue){
+        myDashboard.addParameter(parameterName, func);
+        testFunctionParameter(parameterName, func, funcToString, returnValue);
+      };
 
-    myDashboard.addParameter("undefinedParam", undefined);
-    expect(myDashboard.getParameterValue("undefinedParam")).toEqual(undefined);
-    myDashboard.addParameter("undefinedParam", 123);
-    expect(myDashboard.getParameterValue("undefinedParam")).toEqual(123);
+      testSimpleAddParameter("numberParam", 1, 2);
+      testSimpleAddParameter("stringParam", "test", "testtest");
+      testSimpleAddParameter("booleanParam", true, false);
+      testSimpleAddParameter("nullParam", null, "test");
+      testSimpleAddParameter("arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleAddParameter("objectParam1", {a: 1, b: 2}, {});
 
-    var func1 = function(){var v=0;return v;};
-    testFunctionAddParameter("functionParam", func1, func1.toString(), func1());
+      myDashboard.addParameter("undefinedParam", undefined);
+      expect(myDashboard.getParameterValue("undefinedParam")).toEqual(undefined);
+      myDashboard.addParameter("undefinedParam", 123);
+      expect(myDashboard.getParameterValue("undefinedParam")).toEqual(123);
 
-    myDashboard.addParameter("objectParam2", {
-      testString: "testString",
-      testNumber: 1,
-      testBoolean: true,
-      testUndefined: undefined,
-      testNull: null,
-      testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
-      testObject: {}
+      var func1 = function(){var v=0;return v;};
+      testFunctionAddParameter("functionParam", func1, func1.toString(), func1());
+
+      myDashboard.addParameter("objectParam2", {
+        testString: "testString",
+        testNumber: 1,
+        testBoolean: true,
+        testUndefined: undefined,
+        testNull: null,
+        testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
+        testObject: {}
+      });
+      expect(myDashboard.getParameterValue("objectParam2")).toEqual({
+        testString: "testString",
+        testNumber: 1,
+        testBoolean: true,
+        testUndefined: undefined,
+        testNull: null,
+        testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
+        testObject: {}
+      });
+      expect(myDashboard.getParameterValue("objectParam2")).not.toEqual({});
+      expect(typeof myDashboard.getParameterValue("objectParam2")).toEqual("object");
+
+      myDashboard.addParameter("functionsObjectParam", {
+        firstFunction: function(){
+          return "firstFunction";
+        },
+        secondFunction: function(){
+          return "secondFunction";
+        },
+        thirdFunction: function(){
+          return "thirdFunction";
+        }
+      });
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("firstFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("secondFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("thirdFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction()).toBe("firstFunction");
+      expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction()).toBe("secondFunction");
+      expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction()).toBe("thirdFunction");
+
+      /*
+      storage params
+       */
+      testSimpleAddParameter("Dashboards.storage.numberParam", 1, 2);
+      testSimpleAddParameter("Dashboards.storage.stringParam", "test", "testtest");
+      testSimpleAddParameter("Dashboards.storage.booleanParam", true, false);
+      testSimpleAddParameter("Dashboards.storage.nullParam", null, "test");
+      testSimpleAddParameter("Dashboards.storage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleAddParameter("Dashboards.storage.objectParam1", {a: 1, b: 2}, {});
+
+      myDashboard.addParameter("Dashboards.storage.undefinedParam", undefined);
+      expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam")).toEqual(undefined);
+      myDashboard.addParameter("Dashboards.storage.undefinedParam", 123);
+      expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam")).toEqual(123);
+
+      /*
+       flat parameters
+       */
+
+      myDashboard._setFlatParameters(true);
+      testSimpleAddParameter("mystorage.numberParam", 1, 2);
+      testSimpleAddParameter("mystorage.stringParam", "test", "testtest");
+      testSimpleAddParameter("mystorage.booleanParam", true, false);
+      testSimpleAddParameter("mystorage.nullParam", null, "test");
+      testSimpleAddParameter("mystorage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleAddParameter("mystorage.objectParam1", {a: 1, b: 2}, {});
+
+      myDashboard.addParameter("mystorage.undefinedParam", undefined);
+      expect(myDashboard.getParameterValue("mystorage.undefinedParam")).toEqual(undefined);
+      myDashboard.addParameter("mystorage.undefinedParam", 123);
+      expect(myDashboard.getParameterValue("mystorage.undefinedParam")).toEqual(123);
     });
-    expect(myDashboard.getParameterValue("objectParam2")).toEqual({
-      testString: "testString",
-      testNumber: 1,
-      testBoolean: true,
-      testUndefined: undefined,
-      testNull: null,
-      testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
-      testObject: {}
-    });
-    expect(myDashboard.getParameterValue("objectParam2")).not.toEqual({});
-    expect(typeof myDashboard.getParameterValue("objectParam2")).toEqual("object");
-
-    myDashboard.addParameter("functionsObjectParam", {
-      firstFunction: function(){
-        return "firstFunction";
-      },
-      secondFunction: function(){
-        return "secondFunction";
-      },
-      thirdFunction: function(){
-        return "thirdFunction";
-      }
-    });
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("firstFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("secondFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("thirdFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction()).toBe("firstFunction");
-    expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction()).toBe("secondFunction");
-    expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction()).toBe("thirdFunction");
-
-    /*
-    storage params
-     */
-    testSimpleAddParameter("Dashboards.storage.numberParam", 1, 2);
-    testSimpleAddParameter("Dashboards.storage.stringParam", "test", "testtest");
-    testSimpleAddParameter("Dashboards.storage.booleanParam", true, false);
-    testSimpleAddParameter("Dashboards.storage.nullParam", null, "test");
-    testSimpleAddParameter("Dashboards.storage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleAddParameter("Dashboards.storage.objectParam1", {a: 1, b: 2}, {});
-
-    myDashboard.addParameter("Dashboards.storage.undefinedParam", undefined);
-    expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam")).toEqual(undefined);
-    myDashboard.addParameter("Dashboards.storage.undefinedParam", 123);
-    expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam")).toEqual(123);
-
-    /*
-     flat parameters
-     */
-
-    myDashboard._setFlatParameters(true);
-    testSimpleAddParameter("mystorage.numberParam", 1, 2);
-    testSimpleAddParameter("mystorage.stringParam", "test", "testtest");
-    testSimpleAddParameter("mystorage.booleanParam", true, false);
-    testSimpleAddParameter("mystorage.nullParam", null, "test");
-    testSimpleAddParameter("mystorage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleAddParameter("mystorage.objectParam1", {a: 1, b: 2}, {});
-
-    myDashboard.addParameter("mystorage.undefinedParam", undefined);
-    expect(myDashboard.getParameterValue("mystorage.undefinedParam")).toEqual(undefined);
-    myDashboard.addParameter("mystorage.undefinedParam", 123);
-    expect(myDashboard.getParameterValue("mystorage.undefinedParam")).toEqual(123);
-  });
-  /**
-   * ## The CDF framework # Sets parameters
-   */
-  it("Sets parameters", function() {
     /**
-     * Tests the setParameter call. The second value, when not undefined, will override the previous one
-     *
-     * @param paramName
-     * @param firstValue
-     * @param secondValue
+     * ## The CDF framework # Sets parameters
      */
-    var testSimpleSetParameter = function(paramName, firstValue, secondValue){
-      myDashboard.setParameter(paramName,firstValue);
-      testSimpleParameter(paramName, firstValue);
-      myDashboard.setParameter(paramName,secondValue);
-      testSimpleParameter(paramName, secondValue);
-    };
-    /**
-     * Tests a function parameter, if its body and return value are the same
-     *
-     * @param parameterName
-     * @param func
-     * @param funcToString
-     * @param returnValue
-     */
-    var testFunctionSetParameter = function(parameterName, func, funcToString, returnValue){
-      myDashboard.setParameter(parameterName, func);
-      testFunctionParameter(parameterName, func, funcToString, returnValue);
-    };
+    it("Sets parameters", function() {
+      /**
+       * Tests the setParameter call. The second value, when not undefined, will override the previous one
+       *
+       * @param paramName
+       * @param firstValue
+       * @param secondValue
+       */
+      var testSimpleSetParameter = function(paramName, firstValue, secondValue){
+        myDashboard.setParameter(paramName,firstValue);
+        testSimpleParameter(paramName, firstValue);
+        myDashboard.setParameter(paramName,secondValue);
+        testSimpleParameter(paramName, secondValue);
+      };
+      /**
+       * Tests a function parameter, if its body and return value are the same
+       *
+       * @param parameterName
+       * @param func
+       * @param funcToString
+       * @param returnValue
+       */
+      var testFunctionSetParameter = function(parameterName, func, funcToString, returnValue){
+        myDashboard.setParameter(parameterName, func);
+        testFunctionParameter(parameterName, func, funcToString, returnValue);
+      };
 
-    testSimpleSetParameter("numberParam", 1, 2);
-    testSimpleSetParameter("stringParam", "test", "testtest");
-    testSimpleSetParameter("booleanParam", true, false);
-    testSimpleSetParameter("arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleSetParameter("objectParam1", {a: 1, b: 2}, {});
+      testSimpleSetParameter("numberParam", 1, 2);
+      testSimpleSetParameter("stringParam", "test", "testtest");
+      testSimpleSetParameter("booleanParam", true, false);
+      testSimpleSetParameter("arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleSetParameter("objectParam1", {a: 1, b: 2}, {});
 
-    testSimpleSetParameter("nullParam", null, "test");
-    expect(myDashboard.parameterModel.get("nullParam")).toEqual("test");
-    testSimpleSetParameter("nullParam", "test", null);
-    expect(myDashboard.parameterModel.get("nullParam")).toEqual(null);
+      testSimpleSetParameter("nullParam", null, "test");
+      expect(myDashboard.parameterModel.get("nullParam")).toEqual("test");
+      testSimpleSetParameter("nullParam", "test", null);
+      expect(myDashboard.parameterModel.get("nullParam")).toEqual(null);
 
-    myDashboard.setParameter("undefinedParam2", 123);
-    expect(myDashboard.getParameterValue("undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("undefinedParam2")).toEqual(123);
-    myDashboard.setParameter("undefinedParam2", undefined);
-    expect(myDashboard.getParameterValue("undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("undefinedParam2")).toEqual(123);
+      myDashboard.setParameter("undefinedParam2", 123);
+      expect(myDashboard.getParameterValue("undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("undefinedParam2")).toEqual(123);
+      myDashboard.setParameter("undefinedParam2", undefined);
+      expect(myDashboard.getParameterValue("undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("undefinedParam2")).toEqual(123);
 
-    var func1 = function(){var v=0;return v;};
-    testFunctionSetParameter("functionParam", func1, func1.toString(), func1());
+      var func1 = function(){var v=0;return v;};
+      testFunctionSetParameter("functionParam", func1, func1.toString(), func1());
 
-    myDashboard.setParameter("objectParam2", {
-      testString: "testString",
-      testNumber: 1,
-      testBoolean: true,
-      testUndefined: undefined,
-      testNull: null,
-      testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
-      testObject: {}
+      myDashboard.setParameter("objectParam2", {
+        testString: "testString",
+        testNumber: 1,
+        testBoolean: true,
+        testUndefined: undefined,
+        testNull: null,
+        testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
+        testObject: {}
+      });
+      expect(myDashboard.getParameterValue("objectParam2")).toEqual({
+        testString: "testString",
+        testNumber: 1,
+        testBoolean: true,
+        testUndefined: undefined,
+        testNull: null,
+        testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
+        testObject: {}
+      });
+      expect(myDashboard.getParameterValue("objectParam2")).not.toEqual({});
+      expect(typeof myDashboard.getParameterValue("objectParam2")).toEqual("object");
+
+      myDashboard.setParameter("functionsObjectParam", {
+        firstFunction: function(){
+          return "firstFunction";
+        },
+        secondFunction: function(){
+          return "secondFunction";
+        },
+        thirdFunction: function(){
+          return "thirdFunction";
+        }
+      });
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("firstFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("secondFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("thirdFunction")).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction instanceof Function).toBeTruthy();
+      expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction()).toBe("firstFunction");
+      expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction()).toBe("secondFunction");
+      expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction()).toBe("thirdFunction");
+
+      /*
+       storage params
+       */
+      testSimpleSetParameter("Dashboards.storage.numberParam", 1, 2);
+      testSimpleSetParameter("Dashboards.storage.stringParam", "test", "testtest");
+      testSimpleSetParameter("Dashboards.storage.booleanParam", true, false);
+      testSimpleSetParameter("Dashboards.storage.nullParam", null, "test");
+      testSimpleSetParameter("Dashboards.storage.nullParam", "test", null);
+      testSimpleSetParameter("Dashboards.storage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleSetParameter("Dashboards.storage.objectParam1", {a: 1, b: 2}, {});
+
+      myDashboard.setParameter("Dashboards.storage.undefinedParam2", 123);
+      expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("Dashboards.storage.undefinedParam2")).toEqual(123);
+      myDashboard.setParameter("Dashboards.storage.undefinedParam2", undefined);
+      expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("Dashboards.storage.undefinedParam2")).toEqual(123);
+
+
+      /*
+       flat params
+       */
+
+      myDashboard._setFlatParameters(true);
+      testSimpleSetParameter("mystorage.numberParam", 1, 2);
+      testSimpleSetParameter("mystorage.stringParam", "test", "testtest");
+      testSimpleSetParameter("mystorage.booleanParam", true, false);
+      testSimpleSetParameter("mystorage.nullParam", null, "test");
+      testSimpleSetParameter("mystorage.nullParam", "test", null);
+      testSimpleSetParameter("mystorage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
+      testSimpleSetParameter("mystorage.objectParam1", {a: 1, b: 2}, {});
+
+      myDashboard.setParameter("mystorage.undefinedParam2", 123);
+      expect(myDashboard.getParameterValue("mystorage.undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("mystorage.undefinedParam2")).toEqual(123);
+      myDashboard.setParameter("mystorage.undefinedParam2", undefined);
+      expect(myDashboard.getParameterValue("mystorage.undefinedParam2")).toEqual(123);
+      expect(myDashboard.parameterModel.get("mystorage.undefinedParam2")).toEqual(123);
+
     });
-    expect(myDashboard.getParameterValue("objectParam2")).toEqual({
-      testString: "testString",
-      testNumber: 1,
-      testBoolean: true,
-      testUndefined: undefined,
-      testNull: null,
-      testArray: [ "firstEntry", "secondEntry", "thirdEntry" ],
-      testObject: {}
-    });
-    expect(myDashboard.getParameterValue("objectParam2")).not.toEqual({});
-    expect(typeof myDashboard.getParameterValue("objectParam2")).toEqual("object");
-
-    myDashboard.setParameter("functionsObjectParam", {
-      firstFunction: function(){
-        return "firstFunction";
-      },
-      secondFunction: function(){
-        return "secondFunction";
-      },
-      thirdFunction: function(){
-        return "thirdFunction";
-      }
-    });
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("firstFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("secondFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").hasOwnProperty("thirdFunction")).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction instanceof Function).toBeTruthy();
-    expect(myDashboard.getParameterValue("functionsObjectParam").firstFunction()).toBe("firstFunction");
-    expect(myDashboard.getParameterValue("functionsObjectParam").secondFunction()).toBe("secondFunction");
-    expect(myDashboard.getParameterValue("functionsObjectParam").thirdFunction()).toBe("thirdFunction");
-
-    /*
-     storage params
-     */
-    testSimpleSetParameter("Dashboards.storage.numberParam", 1, 2);
-    testSimpleSetParameter("Dashboards.storage.stringParam", "test", "testtest");
-    testSimpleSetParameter("Dashboards.storage.booleanParam", true, false);
-    testSimpleSetParameter("Dashboards.storage.nullParam", null, "test");
-    testSimpleSetParameter("Dashboards.storage.nullParam", "test", null);
-    testSimpleSetParameter("Dashboards.storage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleSetParameter("Dashboards.storage.objectParam1", {a: 1, b: 2}, {});
-
-    myDashboard.setParameter("Dashboards.storage.undefinedParam2", 123);
-    expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("Dashboards.storage.undefinedParam2")).toEqual(123);
-    myDashboard.setParameter("Dashboards.storage.undefinedParam2", undefined);
-    expect(myDashboard.getParameterValue("Dashboards.storage.undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("Dashboards.storage.undefinedParam2")).toEqual(123);
-
-
-    /*
-     flat params
-     */
-
-    myDashboard._setFlatParameters(true);
-    testSimpleSetParameter("mystorage.numberParam", 1, 2);
-    testSimpleSetParameter("mystorage.stringParam", "test", "testtest");
-    testSimpleSetParameter("mystorage.booleanParam", true, false);
-    testSimpleSetParameter("mystorage.nullParam", null, "test");
-    testSimpleSetParameter("mystorage.nullParam", "test", null);
-    testSimpleSetParameter("mystorage.arrayParam", ["test1", "test2"], ["test3", "test4"]);
-    testSimpleSetParameter("mystorage.objectParam1", {a: 1, b: 2}, {});
-
-    myDashboard.setParameter("mystorage.undefinedParam2", 123);
-    expect(myDashboard.getParameterValue("mystorage.undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("mystorage.undefinedParam2")).toEqual(123);
-    myDashboard.setParameter("mystorage.undefinedParam2", undefined);
-    expect(myDashboard.getParameterValue("mystorage.undefinedParam2")).toEqual(123);
-    expect(myDashboard.parameterModel.get("mystorage.undefinedParam2")).toEqual(123);
-
   });
+
   /**
    * ## The CDF framework # _isParameterInModel
    */
@@ -658,86 +682,93 @@ describe("The CDF framework #", function() {
       myDashboard.globalContext = true;
     });
   });
-  /**
-   * ## The CDF framework # Syncs parameters
-   */
-  it("Syncs parameters", function() {
-    myDashboard.setParameter("parentParam",1);
-    myDashboard.setParameter("childParam",0);
-    myDashboard.syncParameters("parentParam","childParam"); // Test initial syncing
-    expect(myDashboard.getParameterValue("childParam")).toEqual(1);
 
-    myDashboard.fireChange("parentParam",2);// Test change propagation
-    expect(myDashboard.getParameterValue("childParam")).toEqual(2);
-  });
-  /**
-   * ## The CDF framework # Triggers postInit when all components have finished rendering
-   */
- it("Triggers postInit when all components have finished rendering", function(done) {
-   spyOn(myDashboard, "handlePostInit");
+  describe("The CDF framework # parameter synchronization", function() {
+    /**
+     * ## The CDF framework # Syncs parameters
+     */
+    it("Syncs parameters", function() {
+      myDashboard.setParameter("parentParam",1);
+      myDashboard.setParameter("childParam",0);
+      myDashboard.syncParameters("parentParam","childParam"); // Test initial syncing
+      expect(myDashboard.getParameterValue("childParam")).toEqual(1);
 
-   myDashboard.waitingForInit = null;
-   myDashboard.finishedInit = false;
-   myDashboard.init();
+      myDashboard.fireChange("parentParam",2);// Test change propagation
+      expect(myDashboard.getParameterValue("childParam")).toEqual(2);
+    });
+    /**
+     * ## The CDF framework # Triggers postInit when all components have finished rendering
+     */
+    it("Triggers postInit when all components have finished rendering", function(done) {
+      spyOn(myDashboard, "handlePostInit");
 
-   //Data to validate
-   var dataToValidate = function(){
-     expect(myDashboard.handlePostInit).toHaveBeenCalled();
-     done();
-   };
+      myDashboard.waitingForInit = null;
+      myDashboard.finishedInit = false;
+      myDashboard.init();
 
-   setTimeout(dataToValidate, 500);
+      //Data to validate
+      var dataToValidate = function(){
+        expect(myDashboard.handlePostInit).toHaveBeenCalled();
+        done();
+      };
+
+      setTimeout(dataToValidate, 500);
+    });
   });
 
   /**
    * ## The CDF framework # Get Query Parameter
    */
-  it("Get Query Parameter", function() {
-    spyOn(myDashboard, "getLocationSearchString")
-        .and.returnValue("?debug=true&randomName&noValue=&bug=false");
+  describe("The CDF framework # Query Parameter", function() {
+    it("is read correctly", function() {
+      spyOn(myDashboard, "getLocationSearchString")
+          .and.returnValue("?debug=true&randomName&noValue=&bug=false");
 
-    expect(myDashboard.getQueryParameter("debug")).toBe("true");
-    expect(myDashboard.getQueryParameter("bug")).toBe("false");
-    expect(myDashboard.getQueryParameter("randomName")).toBe("");
-    expect(myDashboard.getQueryParameter("noValue")).toBe("");
-    expect(myDashboard.getQueryParameter("notThere")).toBe("");
+      expect(myDashboard.getQueryParameter("debug")).toBe("true");
+      expect(myDashboard.getQueryParameter("bug")).toBe("false");
+      expect(myDashboard.getQueryParameter("randomName")).toBe("");
+      expect(myDashboard.getQueryParameter("noValue")).toBe("");
+      expect(myDashboard.getQueryParameter("notThere")).toBe("");
 
+    });
   });
 
   /**
    * ## The CDF framework # Number Format
    */
-  //TODO: Uncomment this test when CDF-544 is resolved
-  /*it("Number Format", function() {
-    var defaultMask = cdo.format.language().number().mask();
-    var defaultMask_en_us = cdo.format.language('en-us').number().mask();
-    var defaultMask_en_gb = cdo.format.language('en-gb').number().mask();
-    var defaultMask_pt_pt = cdo.format.language('pt-pt').number().mask();
+  describe("The CDF framework # Value Formatting", function() {
+    //TODO: Uncomment this test when CDF-544 is resolved
+    /*it("Number Format", function() {
+      var defaultMask = cdo.format.language().number().mask();
+      var defaultMask_en_us = cdo.format.language('en-us').number().mask();
+      var defaultMask_en_gb = cdo.format.language('en-gb').number().mask();
+      var defaultMask_pt_pt = cdo.format.language('pt-pt').number().mask();
 
-    expect(Dashboards.numberFormat(123456, "#AC")).toEqual("123k$");
-    expect(Dashboards.numberFormat(123456, "#AC", 'en-us')).toEqual("123k$");
-    expect(Dashboards.numberFormat(123456, "#AC", 'en-gb')).toEqual("123k£");
-    expect(Dashboards.numberFormat(123456, "#AC", 'pt-pt')).toEqual("123k€");
+      expect(Dashboards.numberFormat(123456, "#AC")).toEqual("123k$");
+      expect(Dashboards.numberFormat(123456, "#AC", 'en-us')).toEqual("123k$");
+      expect(Dashboards.numberFormat(123456, "#AC", 'en-gb')).toEqual("123k£");
+      expect(Dashboards.numberFormat(123456, "#AC", 'pt-pt')).toEqual("123k€");
 
-    //check if default mask values were not changed by numberFormat
-    expect(cdo.format.language().number().mask()).toEqual(defaultMask);
-    expect(cdo.format.language('en-us').number().mask()).toEqual(defaultMask_en_us);
-    expect(cdo.format.language('en-gb').number().mask()).toEqual(defaultMask_en_gb);
-    expect(cdo.format.language('pt-pt').number().mask()).toEqual(defaultMask_pt_pt);
-  });*/
+      //check if default mask values were not changed by numberFormat
+      expect(cdo.format.language().number().mask()).toEqual(defaultMask);
+      expect(cdo.format.language('en-us').number().mask()).toEqual(defaultMask_en_us);
+      expect(cdo.format.language('en-gb').number().mask()).toEqual(defaultMask_en_gb);
+      expect(cdo.format.language('pt-pt').number().mask()).toEqual(defaultMask_pt_pt);
+    });*/
 
-  /**
-   * ## The CDF framework # Date Parse
-   */
-  it("Date Parse", function() {
-    function expectDateParse(date, mask, expectedResult) {
-      var result = myDashboard.dateParse(date, mask).toString();
-      expect(result.indexOf(expectedResult) > -1).toBe(true);
-    }
+    /**
+     * ## The CDF framework # Date Parse
+     */
+    it("Date Parse", function() {
+      function expectDateParse(date, mask, expectedResult) {
+        var result = myDashboard.dateParse(date, mask).toString();
+        expect(result.indexOf(expectedResult) > -1).toBe(true);
+      }
 
-    expectDateParse(null, 'DD-MM-YY', 'Invalid Date');
-    expectDateParse('13-08-1983', 'DD-MM-YYYY', 'Sat Aug 13 1983');
-    expectDateParse('Wednesday, February 18, 2015 12:00 AM', 'LLLL', 'Wed Feb 18 2015');
+      expectDateParse(null, 'DD-MM-YY', 'Invalid Date');
+      expectDateParse('13-08-1983', 'DD-MM-YYYY', 'Sat Aug 13 1983');
+      expectDateParse('Wednesday, February 18, 2015 12:00 AM', 'LLLL', 'Wed Feb 18 2015');
+    });
   });
 
   /**

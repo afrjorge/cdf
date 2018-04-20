@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -59,38 +59,6 @@ define([
     // the table component's fnInitComplete() callback function which executes postExec() and unblock()
     var $htmlObject = $('<div />').attr('id', tableComponentDefaults.htmlObject);
 
-    beforeEach(function() {
-      $('body').append($htmlObject);
-      dashboard = new Dashboard();
-      dashboard.init();
-      dashboard.addDataSource("tableQuery", dataSource);
-      tableComponent = new TableComponent(tableComponentDefaults);
-      dashboard.addComponent(tableComponent);
-    });
-
-    afterEach(function() {
-      $htmlObject.remove();
-    });
-
-    /**
-     * ## The Table Component # allows a dashboard to execute update
-     */
-    it("allows a dashboard to execute update", function(done) {
-      spyOn(tableComponent, 'update').and.callThrough();
-      spyOn(tableComponent, 'triggerQuery').and.callThrough();
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(resultSet);
-      });
-
-      // listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect(tableComponent.update).toHaveBeenCalled();
-        done();
-      });
-
-      dashboard.update(tableComponent);
-    });
-
     var testHeaders = function(value, done) {
       tableComponent.chartDefinition.colHeaders[0] = value;
       var text = value || "";
@@ -107,175 +75,209 @@ define([
       dashboard.update(tableComponent);
     };
 
-    it("properly escapes column headers", function(done) {
-      testHeaders('<script>alert("Gotcha!")</script>', done);
+    beforeEach(function() {
+      $('body').append($htmlObject);
+      dashboard = new Dashboard();
+      dashboard.init();
+      dashboard.addDataSource("tableQuery", dataSource);
+      tableComponent = new TableComponent(tableComponentDefaults);
+      dashboard.addComponent(tableComponent);
     });
 
-    it("ignores null column headers", function(done) {
-      testHeaders(null, done);
+    afterEach(function() {
+      $htmlObject.remove();
     });
 
-    /**
-     * ## The Table Component # calls failureCallback when a query fails.
-     */
-    it("calls failureCallback when a query fails", function(done) {
-      spyOn($, 'ajax').and.callFake(function(params) {
-          params.error();
+    describe("update", function() {
+      it("allows a dashboard to execute update", function(done) {
+        spyOn(tableComponent, 'update').and.callThrough();
+        spyOn(tableComponent, 'triggerQuery').and.callThrough();
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(resultSet);
+        });
+
+        // listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect(tableComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(tableComponent);
       });
-      tableComponent.failureCallback = function () {
-         done();
-      };
-      dashboard.update(tableComponent);
     });
 
-    /**
-     * ## The Table Component # executes with a empty result set and column types ,column widths ,column sortable and column searchable properties defined.
-     */
-    it("executes with a empty result set and column types ,column widths ,column sortable and column searchable properties defined.", function(done) {
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success('');
+    describe("default behaviour", function() {
+      it("properly escapes column headers", function(done) {
+        testHeaders('<script>alert("Gotcha!")</script>', done);
       });
 
-      var json = {
-        metadata: {
-          map: function() {
-            return [];
-          }
-        },
-        resultSet: []
-      }
-
-      var processTableComponentResponse = tableComponent.processTableComponentResponse;
-      spyOn(tableComponent, 'processTableComponentResponse').and.callFake(function() {
-        return processTableComponentResponse.call(tableComponent, json);
+      it("ignores null column headers", function(done) {
+        testHeaders(null, done);
       });
 
-      tableComponent.chartDefinition.colHeaders = [];
-      //listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect(tableComponent.rawData).toBeDefined();
-        done();
+      /**
+       * ## The Table Component # calls failureCallback when a query fails.
+       */
+      it("calls failureCallback when a query fails", function(done) {
+        spyOn($, 'ajax').and.callFake(function(params) {
+            params.error();
+        });
+        tableComponent.failureCallback = function () {
+           done();
+        };
+        dashboard.update(tableComponent);
       });
-      dashboard.update(tableComponent);
+
+      /**
+       * ## The Table Component # executes with a empty result set and column types ,column widths ,column sortable and column searchable properties defined.
+       */
+      it("executes with a empty result set and column types ,column widths ,column sortable and column searchable properties defined.", function(done) {
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success('');
+        });
+
+        var json = {
+          metadata: {
+            map: function() {
+              return [];
+            }
+          },
+          resultSet: []
+        };
+
+        var processTableComponentResponse = tableComponent.processTableComponentResponse;
+        spyOn(tableComponent, 'processTableComponentResponse').and.callFake(function() {
+          return processTableComponentResponse.call(tableComponent, json);
+        });
+
+        tableComponent.chartDefinition.colHeaders = [];
+        //listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect(tableComponent.rawData).toBeDefined();
+          done();
+        });
+        dashboard.update(tableComponent);
+      });
+
+      /**
+       * ## The Table Component # executes with a result set that has less columns than column types ,column widths ,column searchable and column sortable properties defined.
+       */
+      it("executes with a result set that has less columns than column types ,column widths ,column searchable and column sortable properties defined.", function(done) {
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(JSON.parse(resultSet));
+        });
+        tableComponent.chartDefinition.colTypes = ['string', 'string', 'string', 'string'];
+        tableComponent.chartDefinition.colWidths = ['500px', '500px', '500px', '500px'];
+        tableComponent.chartDefinition.colSearchable = ['1', '2', '1', '2'];
+        tableComponent.chartDefinition.colSortable = ['true', 'true', 'true', 'true'];
+
+        //listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect(tableComponent.rawData).toBeDefined();
+          done();
+        });
+        dashboard.update(tableComponent);
+      });
+
+      /**
+       * ## The Table Component # executes with a result set that has more columns than column types ,column widths ,column searchable and column sortable properties defined.
+       */
+      it("executes with a result set that has more columns than column types ,column widths ,column searchable and column sortable properties defined", function(done) {
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(JSON.parse(resultSet));
+        });
+        tableComponent.chartDefinition.colTypes = ['string'];
+        tableComponent.chartDefinition.colWidths = ['500px'];
+        tableComponent.chartDefinition.colSearchable = ['1'];
+        tableComponent.chartDefinition.colSortable = ['true'];
+
+        //listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect(tableComponent.rawData).toBeDefined();
+          done();
+        });
+        dashboard.update(tableComponent);
+      });
+
+      /**
+       * ## The Table Component # can update when server side is true
+       */
+      it("can update when server side is true", function(done) {
+        spyOn(tableComponent, 'update').and.callThrough();
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(JSON.parse(resultSet));
+        });
+
+        tableComponent.chartDefinition.paginateServerside = true;
+        tableComponent.parameters = [];
+
+        // listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect(tableComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(tableComponent);
+      });
+
+      /**
+       * ## The Table Component # paginatingUpdate can execute without defined parameters
+       */
+      it("can update when server side is true and without defined parameters", function() {
+        tableComponent.queryState = jasmine.createSpyObj("queryState", ['setParameters'])
+        tableComponent.queryState.fetchData = jasmine.createSpy('fetchData');
+        tableComponent.queryState.setCallback = jasmine.createSpy('setCallback');
+        tableComponent.queryState.setPageSize = jasmine.createSpy('setPageSize');
+        tableComponent.queryState.setAjaxOptions = jasmine.createSpy('setAjaxOptions');
+
+        tableComponent.paginatingUpdate();
+        expect(tableComponent.queryState.setParameters).not.toHaveBeenCalled();
+        expect(tableComponent.queryState.setCallback).toHaveBeenCalled();
+        expect(tableComponent.queryState.setPageSize).toHaveBeenCalled();
+        expect(tableComponent.queryState.setAjaxOptions).toHaveBeenCalled();
+        expect(tableComponent.queryState.fetchData).toHaveBeenCalled();
+      });
+
+      /**
+       * ## The Table Component # paginatingUpdate can execute with defined parameters
+       */
+      it("can update when server side is true and without defined parameters", function() {
+        tableComponent.queryState = jasmine.createSpyObj("queryState", ['setParameters']);
+        tableComponent.queryState.fetchData = jasmine.createSpy('fetchData');
+        tableComponent.queryState.setCallback = jasmine.createSpy('setCallback');
+        tableComponent.queryState.setPageSize = jasmine.createSpy('setPageSize');
+        tableComponent.queryState.setAjaxOptions = jasmine.createSpy('setAjaxOptions');
+        tableComponent.parameters = jasmine.createSpy('parameters');
+
+        tableComponent.paginatingUpdate();
+        expect(tableComponent.queryState.setParameters).toHaveBeenCalled();
+
+      });
+      /**
+       * ## The Table Component # should only trigger one query on start-up
+       */
+      it("should only trigger one query on start-up.", function(done) {
+
+        spyOn($, 'ajax').and.callFake(function(params) {
+          params.success(JSON.parse(resultSet));
+        });
+
+        tableComponent.chartDefinition.colTypes = ['string'];
+        tableComponent.chartDefinition.colWidths = ['500px'];
+        tableComponent.chartDefinition.colSearchable = ['1'];
+        tableComponent.chartDefinition.colSortable = ['true'];
+        tableComponent.chartDefinition.paginateServerside = 'true';
+        tableComponent.parameters = [];
+
+        //listen to cdf:postExecution event
+        tableComponent.once("cdf:postExecution", function() {
+          expect($.ajax.calls.count()).toEqual(1);
+          done();
+        });
+        dashboard.update(tableComponent);
+      });
     });
 
-    /**
-     * ## The Table Component # executes with a result set that has less columns than column types ,column widths ,column searchable and column sortable properties defined.
-     */
-    it("executes with a result set that has less columns than column types ,column widths ,column searchable and column sortable properties defined.", function(done) {
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(JSON.parse(resultSet));
-      });
-      tableComponent.chartDefinition.colTypes = ['string', 'string', 'string', 'string'];
-      tableComponent.chartDefinition.colWidths = ['500px', '500px', '500px', '500px'];
-      tableComponent.chartDefinition.colSearchable = ['1', '2', '1', '2'];
-      tableComponent.chartDefinition.colSortable = ['true', 'true', 'true', 'true'];
-
-      //listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect(tableComponent.rawData).toBeDefined();
-        done();
-      });
-      dashboard.update(tableComponent);
-    });
-
-    /**
-     * ## The Table Component # executes with a result set that has more columns than column types ,column widths ,column searchable and column sortable properties defined.
-     */
-    it("executes with a result set that has more columns than column types ,column widths ,column searchable and column sortable properties defined", function(done) {
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(JSON.parse(resultSet));
-      });
-      tableComponent.chartDefinition.colTypes = ['string'];
-      tableComponent.chartDefinition.colWidths = ['500px'];
-      tableComponent.chartDefinition.colSearchable = ['1'];
-      tableComponent.chartDefinition.colSortable = ['true'];
-
-      //listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect(tableComponent.rawData).toBeDefined();
-        done();
-      });
-      dashboard.update(tableComponent);
-    });
-
-    /**
-     * ## The Table Component # can update when server side is true
-     */
-    it("can update when server side is true", function(done) {
-      spyOn(tableComponent, 'update').and.callThrough();
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(JSON.parse(resultSet));
-      });
-      
-      tableComponent.chartDefinition.paginateServerside = true;
-      tableComponent.parameters = [];
- 
-      // listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect(tableComponent.update).toHaveBeenCalled();
-        done();
-      });
-      
-      dashboard.update(tableComponent);
-    });
-
-    /**
-     * ## The Table Component # paginatingUpdate can execute without defined parameters
-     */
-    it("can update when server side is true and without defined parameters", function() {
-      tableComponent.queryState = jasmine.createSpyObj("queryState", ['setParameters'])
-      tableComponent.queryState.fetchData = jasmine.createSpy('fetchData');
-      tableComponent.queryState.setCallback = jasmine.createSpy('setCallback');
-      tableComponent.queryState.setPageSize = jasmine.createSpy('setPageSize');
-      tableComponent.queryState.setAjaxOptions = jasmine.createSpy('setAjaxOptions');
-
-      tableComponent.paginatingUpdate();
-      expect(tableComponent.queryState.setParameters).not.toHaveBeenCalled();
-      expect(tableComponent.queryState.setCallback).toHaveBeenCalled();
-      expect(tableComponent.queryState.setPageSize).toHaveBeenCalled();
-      expect(tableComponent.queryState.setAjaxOptions).toHaveBeenCalled();
-      expect(tableComponent.queryState.fetchData).toHaveBeenCalled();
-    });
-
-    /**
-     * ## The Table Component # paginatingUpdate can execute with defined parameters
-     */
-    it("can update when server side is true and without defined parameters", function() {
-      tableComponent.queryState = jasmine.createSpyObj("queryState", ['setParameters']);
-      tableComponent.queryState.fetchData = jasmine.createSpy('fetchData');
-      tableComponent.queryState.setCallback = jasmine.createSpy('setCallback');
-      tableComponent.queryState.setPageSize = jasmine.createSpy('setPageSize');
-      tableComponent.queryState.setAjaxOptions = jasmine.createSpy('setAjaxOptions');
-      tableComponent.parameters = jasmine.createSpy('parameters');
-
-      tableComponent.paginatingUpdate();
-      expect(tableComponent.queryState.setParameters).toHaveBeenCalled();
-      
-    });
-    /**
-     * ## The Table Component # should only trigger one query on start-up
-     */
-    it("should only trigger one query on start-up.", function(done) {
-      
-      spyOn($, 'ajax').and.callFake(function(params) {
-        params.success(JSON.parse(resultSet));
-      });
-      
-      tableComponent.chartDefinition.colTypes = ['string'];
-      tableComponent.chartDefinition.colWidths = ['500px'];
-      tableComponent.chartDefinition.colSearchable = ['1'];
-      tableComponent.chartDefinition.colSortable = ['true'];
-      tableComponent.chartDefinition.paginateServerside = 'true';
-      tableComponent.parameters = [];
-
-      //listen to cdf:postExecution event
-      tableComponent.once("cdf:postExecution", function() {
-        expect($.ajax.calls.count()).toEqual(1);
-        done();
-      });
-      dashboard.update(tableComponent);
-    });
     /**
      * ## The Table Component # pagingCallback
      */

@@ -1,5 +1,5 @@
 /*!
- * Copyright 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2017 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -192,7 +192,7 @@ define([
       expect(cccBarChartComponent._cccVizName).toBeNull();
       cccBarChartComponent.getCccVisualizationName();
       expect(cccBarChartComponent._cccVizName).not.toBeNull();
-    })
+    });
 
     it("Gets the correct default ccc compat version and marks the viz api definitions to be applied", function () {
       expect(cccBarChartComponent._vizApiStyles).toBeUndefined();
@@ -235,5 +235,4 @@ define([
       expect(cccBarChartComponent.chartDefinition.colors).toBeUndefined();
     });
   });
-
 });

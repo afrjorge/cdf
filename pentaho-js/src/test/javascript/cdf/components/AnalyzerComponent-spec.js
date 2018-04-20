@@ -1,5 +1,5 @@
 /*!
- * Copyright 2002 - 2017 Webdetails, a Hitachi Vantara company. All rights reserved.
+ * Copyright 2002 - 2018 Webdetails, a Hitachi Vantara company. All rights reserved.
  *
  * This software was developed by Webdetails and is provided under the terms
  * of the Mozilla Public License, Version 2.0, or any later version. You may not use
@@ -48,19 +48,18 @@ define([
 
     dashboard.addComponent(analyzerComponent);
 
-    /**
-     * ## The Analyzer Component # allows a dashboard to execute update
-     */
-    it("allows a dashboard to execute update", function(done) {
-      spyOn(analyzerComponent, 'update').and.callThrough();
+    describe("update", function() {
+      it("allows a dashboard to execute update", function(done) {
+        spyOn(analyzerComponent, 'update').and.callThrough();
 
-      // listen to cdf:postExecution event
-      analyzerComponent.once("cdf:postExecution", function() {
-        expect(analyzerComponent.update).toHaveBeenCalled();
-        done();
+        // listen to cdf:postExecution event
+        analyzerComponent.once("cdf:postExecution", function() {
+          expect(analyzerComponent.update).toHaveBeenCalled();
+          done();
+        });
+
+        dashboard.update(analyzerComponent);
       });
-
-      dashboard.update(analyzerComponent);
     });
 
     describe("getOptions", function() {
